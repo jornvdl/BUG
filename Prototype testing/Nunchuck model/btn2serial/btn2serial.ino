@@ -6,10 +6,8 @@ const int btn4 = 5;
 const int led = 13;
 
 // variables will change:
-int btnState1 = 0;         // variable for reading the pushbutton status
-int btnState2 = 0;         // variable for reading the pushbutton status
-int btnState3 = 0;         // variable for reading the pushbutton status
-int btnState4 = 0;         // variable for reading the pushbutton status
+bool btnState[4] = {1,1,1,1};
+bool btnOldState[4] = {1,1,1,1};
 
 void setup() {
   // initialize the pushbutton pin as an input:
@@ -19,29 +17,38 @@ void setup() {
   pinMode(btn4, INPUT_PULLUP);
   pinMode(led, OUTPUT);
 
-  Serial.begin(9600);
+  Serial.begin(38400);
 }
 
 void loop() {
   // read the state of the pushbutton value:
-  btnState1 = digitalRead(btn1);
-  btnState2 = digitalRead(btn2);
-  btnState3 = digitalRead(btn3);
-  btnState4 = digitalRead(btn4);
+  btnState[0] = digitalRead(btn1);
+  btnState[1] = digitalRead(btn2);
+  btnState[2] = digitalRead(btn3);
+  btnState[3] = digitalRead(btn4);
 
-  Serial.print(btnState1);
-  Serial.print(",");
-  Serial.print(btnState2);
-  Serial.print(",");
-  Serial.print(btnState3);
-  Serial.print(",");
-  Serial.println(btnState4);
+  // Check for every button if state changed
+  for (int i = 0; i < 4; i++) {
+    if (btnState[i] != btnOldState[i]) {
 
-  if (btnState1 and btnState2 and btnState3 and btnState4) {
-    digitalWrite(led, LOW);
-  } else {
-    digitalWrite(led, HIGH);
+      // If button is changed and now pressed, send button number [1...4]
+      if (btnState[i] == false) {
+        Serial.println(i+1);
+        digitalWrite(led,HIGH);
+      }
+
+      // If button is changed and now released, check if all buttons are released. If so, send 0.
+      if (btnState[i] == true) {
+        if (btnState[0] && btnState[1] && btnState[2] && btnState[3]) {
+          Serial.println(0);
+          digitalWrite(led,LOW);
+        }
+      }
+
+      // Update old state to compare next loop
+      btnOldState[i] = btnState[i];
+    }
   }
 
-  delay(50);
+  delay(5);
 }
