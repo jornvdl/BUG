@@ -23,7 +23,10 @@ In this example sketch processing can send an RGB value to Arduino and Arduino w
 //Se the name of the bluetooth keyboard (that shows up in the bluetooth menu of your device)
 BleKeyboard bleKeyboard("BUG-ESP");
 
-const int buttonPin = 5;
+const int buttonPin = 18;
+
+// LED pin (Neopixel / WS2812b) at pin 19. Als het goed is, is de volgorde (met button beneden): links-boven-midden-onder-rechts
+
 //Set the old button state to be LOW/false; which means not pressed
 boolean oldPinState = LOW;
 
