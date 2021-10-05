@@ -35,8 +35,12 @@ char arrowdown = KEY_DOWN_ARROW;
 char arrowleft = KEY_LEFT_ARROW;
 char arrowright = KEY_RIGHT_ARROW;
 //select the desired key
-char key = arrowdown;
+
+
+#define key          space
 #define colour       PURPLE
+
+
 //NEOPIXEL known numbers button on the right: top LED is 0 and right LED is 1 schatting: mid LED is 2, left LED is 3 and bottom LED is 4
 
 Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIN, NEO_GRB + NEO_KHZ800);
@@ -51,7 +55,7 @@ void setup() {
 void loop() {
 
   //if BUG set to arrowup light up the top led in the selected colour
-  while (key == arrowup) {
+  if (key == arrowup) {
     pixels.clear();
     pixels.setBrightness(25);  
     pixels.setPixelColor(0, pixels.Color(colour));
@@ -60,15 +64,10 @@ void loop() {
     pixels.setPixelColor(3, pixels.Color(OFF));
     pixels.setPixelColor(4, pixels.Color(OFF));
     pixels.show();
-      //the loop for sending the button press to the receiving device
-    while (digitalRead(buttonPin) ==HIGH) {
-      bleKeyboard.press(key); //continuously send a spacebar 
-    }
-    bleKeyboard.release(key);  //release the spacebar
-    delay(5);
+
   }
   //if BUG set to space light up the middle row of leds in the selected colour
-  while (key == space) {
+  if (key == space) {
     pixels.clear();
     pixels.setBrightness(25);  
     pixels.setPixelColor(0, pixels.Color(OFF));
@@ -77,14 +76,10 @@ void loop() {
     pixels.setPixelColor(3, pixels.Color(colour));
     pixels.setPixelColor(4, pixels.Color(OFF));
     pixels.show();
-    while (digitalRead(buttonPin) ==HIGH) {
-      bleKeyboard.press(key); //continuously send a spacebar 
-    }
-    bleKeyboard.release(key);  //release the spacebar
-    delay(5);
+
   }  
   //if BUG set to arrowdown light up the botton led in the selected colour
-  while (key == arrowdown) {
+  if (key == arrowdown) {
     pixels.clear();
     pixels.setBrightness(25);  
     pixels.setPixelColor(0, pixels.Color(OFF));
@@ -93,14 +88,10 @@ void loop() {
     pixels.setPixelColor(3, pixels.Color(OFF));
     pixels.setPixelColor(4, pixels.Color(colour));
     pixels.show();
-    while (digitalRead(buttonPin) ==HIGH) {
-      bleKeyboard.press(key); //continuously send a spacebar 
-    }
-    bleKeyboard.release(key);  //release the spacebar
-    delay(5);
+
   }  
   //if BUG set to arrowright light up the right led in the selected colour
-  while (key == arrowright) {
+  if (key == arrowright) {
     pixels.clear();
     pixels.setBrightness(25);  
     pixels.setPixelColor(0, pixels.Color(OFF));
@@ -109,14 +100,10 @@ void loop() {
     pixels.setPixelColor(3, pixels.Color(OFF));
     pixels.setPixelColor(4, pixels.Color(OFF));
     pixels.show();
-    while (digitalRead(buttonPin) ==HIGH) {
-      bleKeyboard.press(key); //continuously send a spacebar 
-    }
-    bleKeyboard.release(key);  //release the spacebar
-    delay(5);
+
   }  
   //if BUG set to arrowleft light up the left led in the selected colour
-  while (key == arrowleft) { 
+  if (key == arrowleft) { 
     pixels.clear();
     pixels.setBrightness(25);  
     pixels.setPixelColor(0, pixels.Color(OFF));
@@ -125,11 +112,11 @@ void loop() {
     pixels.setPixelColor(3, pixels.Color(colour));
     pixels.setPixelColor(4, pixels.Color(OFF));
     pixels.show();
-    while (digitalRead(buttonPin) ==HIGH) {
+  
+  }  
+  while (digitalRead(buttonPin) ==HIGH) {
       bleKeyboard.press(key); //continuously send a spacebar 
     }
     bleKeyboard.release(key);  //release the spacebar
     delay(5);
-  }  
-
 }

@@ -25,8 +25,7 @@ BleKeyboard bleKeyboard("BUG-ESP");
 
 const int buttonPin = 18;
 char space = 32;
-char key = KEY_UP_ARROW;
-//char key = space;
+char key = space;
 // LED pin (Neopixel / WS2812b) at pin 19. Als het goed is, is de volgorde (met button beneden): links-boven-midden-onder-rechts
 
 //Set the old button state to be LOW/false; which means not pressed
