@@ -43,9 +43,9 @@ void setup() {
 
 void loop() {
   while (digitalRead(buttonPin) ==HIGH) {
-    bleKeyboard.press(' ');
-    delay(5);
+    bleKeyboard.press(32); //continuously send a spacebar 
+    //delay(5);
   }
-  bleKeyboard.release(' ');
+  bleKeyboard.release(32);  //release the spacebar
   delay(5);
 }
