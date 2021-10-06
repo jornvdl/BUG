@@ -30,16 +30,16 @@ BleKeyboard bleKeyboard("BUG-ESP");
 #define OFF         0, 0, 0       //set the rgb value for OFF
 
 //Define char for space arrow up, down, left, and right
-char space = 32;
-char arrowup = KEY_UP_ARROW;
-char arrowdown = KEY_DOWN_ARROW;
-char arrowleft = KEY_LEFT_ARROW;
-char arrowright = KEY_RIGHT_ARROW;
+char space = 195;
+char arrowup = 218;
+char arrowdown = 217;
+char arrowleft = 216;
+char arrowright = 215;
 
 
 //select the desired key and colour
 #define key          space
-#define colour       PURPLE
+#define colour       GREEN
 
 
 //NEOPIXEL known numbers button on the right: top LED is 0 and right LED is 1 schatting: mid LED is 2, left LED is 3 and bottom LED is 4
@@ -58,7 +58,7 @@ void loop() {
   //if BUG set to arrowup light up the top led in the selected colour
   if (key == arrowup) {
     pixels.clear();
-    pixels.setBrightness(25);  
+    pixels.setBrightness(15);  
     pixels.setPixelColor(0, pixels.Color(colour));
     pixels.setPixelColor(1, pixels.Color(OFF));
     pixels.setPixelColor(2, pixels.Color(OFF));
@@ -70,7 +70,7 @@ void loop() {
   //if BUG set to space light up the middle row of leds in the selected colour
   if (key == space) {
     pixels.clear();
-    pixels.setBrightness(25);  
+    pixels.setBrightness(15);  
     pixels.setPixelColor(0, pixels.Color(OFF));
     pixels.setPixelColor(1, pixels.Color(colour));
     pixels.setPixelColor(2, pixels.Color(colour));
@@ -82,7 +82,7 @@ void loop() {
   //if BUG set to arrowdown light up the botton led in the selected colour
   if (key == arrowdown) {
     pixels.clear();
-    pixels.setBrightness(25);  
+    pixels.setBrightness(15);  
     pixels.setPixelColor(0, pixels.Color(OFF));
     pixels.setPixelColor(1, pixels.Color(OFF));
     pixels.setPixelColor(2, pixels.Color(OFF));
@@ -94,7 +94,7 @@ void loop() {
   //if BUG set to arrowright light up the right led in the selected colour
   if (key == arrowright) {
     pixels.clear();
-    pixels.setBrightness(25);  
+    pixels.setBrightness(15);  
     pixels.setPixelColor(0, pixels.Color(OFF));
     pixels.setPixelColor(1, pixels.Color(colour));
     pixels.setPixelColor(2, pixels.Color(OFF));
@@ -106,7 +106,7 @@ void loop() {
   //if BUG set to arrowleft light up the left led in the selected colour
   if (key == arrowleft) { 
     pixels.clear();
-    pixels.setBrightness(25);  
+    pixels.setBrightness(15);  
     pixels.setPixelColor(0, pixels.Color(OFF));
     pixels.setPixelColor(1, pixels.Color(OFF));
     pixels.setPixelColor(2, pixels.Color(OFF));
