@@ -30,12 +30,11 @@ BleKeyboard bleKeyboard("BUG-ESP");
 #define OFF         0, 0, 0       //set the rgb value for OFF
 
 //Define char for space arrow up, down, left, and right
-char space = 195;
+char space = 32;
 char arrowup = 218;
 char arrowdown = 217;
 char arrowleft = 216;
 char arrowright = 215;
-
 
 //select the desired key and colour
 #define key          space
