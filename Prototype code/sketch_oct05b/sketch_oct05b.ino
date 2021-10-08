@@ -37,7 +37,7 @@ char arrowleft = 216;
 char arrowright = 215;
 
 //select the desired key and colour
-#define key          space
+#define key          arrowup
 #define colour       GREEN
 
 
@@ -58,8 +58,8 @@ void loop() {
   if (key == arrowup) {
     pixels.clear();
     pixels.setBrightness(15);  
-    pixels.setPixelColor(0, pixels.Color(colour));
-    pixels.setPixelColor(1, pixels.Color(OFF));
+    pixels.setPixelColor(0, pixels.Color(OFF));
+    pixels.setPixelColor(1, pixels.Color(colour));
     pixels.setPixelColor(2, pixels.Color(OFF));
     pixels.setPixelColor(3, pixels.Color(OFF));
     pixels.setPixelColor(4, pixels.Color(OFF));
@@ -70,11 +70,11 @@ void loop() {
   if (key == space) {
     pixels.clear();
     pixels.setBrightness(15);  
-    pixels.setPixelColor(0, pixels.Color(OFF));
-    pixels.setPixelColor(1, pixels.Color(colour));
+    pixels.setPixelColor(0, pixels.Color(colour));
+    pixels.setPixelColor(1, pixels.Color(OFF));
     pixels.setPixelColor(2, pixels.Color(colour));
-    pixels.setPixelColor(3, pixels.Color(colour));
-    pixels.setPixelColor(4, pixels.Color(OFF));
+    pixels.setPixelColor(3, pixels.Color(OFF));
+    pixels.setPixelColor(4, pixels.Color(colour));
     pixels.show();
 
   }  
@@ -85,8 +85,8 @@ void loop() {
     pixels.setPixelColor(0, pixels.Color(OFF));
     pixels.setPixelColor(1, pixels.Color(OFF));
     pixels.setPixelColor(2, pixels.Color(OFF));
-    pixels.setPixelColor(3, pixels.Color(OFF));
-    pixels.setPixelColor(4, pixels.Color(colour));
+    pixels.setPixelColor(3, pixels.Color(colour));
+    pixels.setPixelColor(4, pixels.Color(OFF));
     pixels.show();
 
   }  
@@ -95,10 +95,10 @@ void loop() {
     pixels.clear();
     pixels.setBrightness(15);  
     pixels.setPixelColor(0, pixels.Color(OFF));
-    pixels.setPixelColor(1, pixels.Color(colour));
+    pixels.setPixelColor(1, pixels.Color(OFF));
     pixels.setPixelColor(2, pixels.Color(OFF));
     pixels.setPixelColor(3, pixels.Color(OFF));
-    pixels.setPixelColor(4, pixels.Color(OFF));
+    pixels.setPixelColor(4, pixels.Color(colour));
     pixels.show();
 
   }  
@@ -106,17 +106,17 @@ void loop() {
   if (key == arrowleft) { 
     pixels.clear();
     pixels.setBrightness(15);  
-    pixels.setPixelColor(0, pixels.Color(OFF));
+    pixels.setPixelColor(0, pixels.Color(colour));
     pixels.setPixelColor(1, pixels.Color(OFF));
     pixels.setPixelColor(2, pixels.Color(OFF));
-    pixels.setPixelColor(3, pixels.Color(colour));
+    pixels.setPixelColor(3, pixels.Color(OFF));
     pixels.setPixelColor(4, pixels.Color(OFF));
     pixels.show();
   
   }  
   while (digitalRead(buttonPin) ==HIGH) {
       bleKeyboard.press(key); //continuously send a spacebar 
-    }
-    bleKeyboard.release(key);  //release the spacebar
-    delay(5);
+  }
+  bleKeyboard.release(key);  //release the spacebar
+  delay(5);
 }
