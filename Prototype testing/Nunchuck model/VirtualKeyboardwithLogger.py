@@ -11,7 +11,7 @@ import csv  #  https://www.pythontutorial.net/python-basics/python-write-csv-fil
 from datetime import datetime   #https://thispointer.com/python-how-to-get-current-date-and-time-or-timestamp/
 import os
 
-serialPort = serial.Serial("COM4", 38400, timeout=2)
+serialPort = serial.Serial("COM10", 38400, timeout=2)
 
 header = ["timestamp", "button"]
 
@@ -41,9 +41,9 @@ try:
             
             # If released, release space. If pressed, press space and log button number
             if (btn == 0):
-                keyboard.release('space')
+                keyboard.release('down')
             else:
-                keyboard.press('space')
+                keyboard.press('down')
                 timestamp = datetime.now()
                 timestampStr = timestamp.strftime("%H:%M:%S")
                 writer.writerow(["\""+timestampStr+"\"", btn])
