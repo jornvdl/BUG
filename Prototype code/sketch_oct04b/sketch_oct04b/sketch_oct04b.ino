@@ -24,11 +24,12 @@ In this example sketch processing can send an RGB value to Arduino and Arduino w
 BleKeyboard bleKeyboard("BUG-ESP");
 
 const int buttonPin = 18;
-
+char space = 32;
+char key = space;
 // LED pin (Neopixel / WS2812b) at pin 19. Als het goed is, is de volgorde (met button beneden): links-boven-midden-onder-rechts
 
 //Set the old button state to be LOW/false; which means not pressed
-boolean oldPinState = LOW;
+//boolean oldPinState = LOW;
 
 void setup() {
   //Start the Serial communication (with the computer at 115200 bits per second)
@@ -43,9 +44,9 @@ void setup() {
 
 void loop() {
   while (digitalRead(buttonPin) ==HIGH) {
-    bleKeyboard.press(32); //continuously send a spacebar 
+    bleKeyboard.press(key); //continuously send a spacebar 
     //delay(5);
   }
-  bleKeyboard.release(32);  //release the spacebar
+  bleKeyboard.release(key);  //release the spacebar
   delay(5);
 }
