@@ -41,9 +41,9 @@ try:
             
             # If released, release space. If pressed, press space and log button number
             if (btn == 0):
-                keyboard.release('down')
+                keyboard.release('space')
             else:
-                keyboard.press('down')
+                keyboard.press('space')
                 timestamp = datetime.now()
                 timestampStr = timestamp.strftime("%H:%M:%S")
                 writer.writerow(["\""+timestampStr+"\"", btn])
