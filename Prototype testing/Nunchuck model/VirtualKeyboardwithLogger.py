@@ -48,7 +48,7 @@ try:
                 timestampStr = timestamp.strftime("%H:%M:%S")
                 writer.writerow(["\""+timestampStr+"\"", btn])
                 
-except KeyboardInterrupt: 
+except: 
     serialPort.close()
     f.close()
     print("Serial port closed, csv saved.")
