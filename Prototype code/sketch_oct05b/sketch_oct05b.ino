@@ -37,7 +37,7 @@ char arrowleft = 216;
 char arrowright = 215;
 
 //select the desired key and colour
-#define key          space
+#define key          arrowup
 #define colour       GREEN
 
 
