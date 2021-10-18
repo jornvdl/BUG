@@ -19,41 +19,18 @@ neopixles
 //Set the name of the BUG(Bluetooth Ultrasimple Gamepad
 BleKeyboard bleKeyboard("BUG-ESP");
 
-
-
-//Define char for space arrow up, down, left, and right
-char space = 32;
-char arrowup = 218;
-char arrowdown = 217;
-char arrowleft = 216;
-char arrowright = 215;
-
-//select the desired key and colour
-#define key          arrowup
-#define colour       GREEN
-
-
 //NEOPIXEL known numbers button on the top: 0=left, 1=top, 2=centre, 3=bottom, 4=right
 
 Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIN, NEO_GRB + NEO_KHZ800);
 #define DELAYVAL 500 // Time (in milliseconds) to pause between pixels
 
-//Rotation at press of conf button
-
-int currentState;
-unsigned long timepressed = 0;
-unsigned long timereleased = 0;
-
-
 
 void setup() {
   bleKeyboard.begin();                //start ble keyboard
   pinMode(buttonPin, INPUT_PULLDOWN); //set buttonpin as pulldown so standard low
+  pinMode(confPin, INPUT_PULLDOWN);   //set conf button pin as pulldown so standard low
   pixels.begin();
-}
-
-void loop() {
-
+  
   //if BUG set to arrowup light up the top led in the selected colour
   if (key == arrowup) {
     pixels.clear();                                   //reset the pixels
@@ -114,9 +91,52 @@ void loop() {
     pixels.show();
   
   }  
-  while (digitalRead(buttonPin) ==HIGH) {
-      bleKeyboard.press(key); //continuously send a spacebar when button is pressed
+}
+
+void loop() {
+
+  key = KeyCycle[n];
+  
+  if (digitalRead(buttonPin) == HIGH && LastState == LOW) {
+    bleKeyboard.press(key); //continuously send a spacebar when button is pressed
+    LastState = HIGH;       //set last state to high
   }
-  bleKeyboard.release(key);  //stop sending the spacebar when the button is released
-  delay(5);
+  if (digitalRead(buttonPin) == LOW && LastState == HIGH) {
+    bleKeyboard.release(key);  //stop sending the spacebar when the button is released
+    LastState = LOW;
+  }
+  
+  if(LastConfState == LOW && digitalRead(confPin) == HIGH) {       // button is pressed
+    TimePressed = millis();
+    bleKeyboard.write(121);
+    LastConfState = HIGH;
+  }
+  if(LastConfState == HIGH && digitalRead(confPin) == LOW) { // button is released
+    TimeReleased = millis();
+    bleKeyboard.write(110);
+    LastConfState = LOW;
+  }
+
+  long pressDuration = TimeReleased - TimePressed;
+  
+  if( pressDuration < ShortPress && pressDuration != 0) {
+    n = n+1;
+    bleKeyboard.write(111);
+    pressDuration = 0;
+    TimeReleased = 0;
+    TimePressed = 0;
+    if(n > 3) {
+      n = 0;
+     
+    }  
+  }
+  
+  if( pressDuration > LongPress ) {
+    n = 0;
+    pressDuration = 0;
+        bleKeyboard.write(112);
+    TimeReleased = 0;
+    TimePressed = 0;
+  }
+
 }
