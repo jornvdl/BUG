@@ -1,8 +1,6 @@
-
-
 extern int keystroke;
 extern int colour;
-extern int led;
+extern bool layout[4];
 extern int timeout;
 
 
@@ -12,7 +10,7 @@ class keyCallbacks: public BLECharacteristicCallbacks {
     std::string value = keyCharacteristic->getValue();
 
     if (value.length()>0) {
-      //ESP_LOGD(LOG_TAG, "New key value!");
+      
     }
   }
 };
@@ -23,7 +21,7 @@ class colourCallbacks: public BLECharacteristicCallbacks {
     std::string value = colourCharacteristic->getValue();
 
     if (value.length()>0) {
-      //ESP_LOGD(LOG_TAG, "New colour value!");
+      
     }
   }
 };
@@ -34,7 +32,7 @@ class ledCallbacks: public BLECharacteristicCallbacks {
     std::string value = ledCharacteristic->getValue();
 
     if (value.length()>0) {
-      //ESP_LOGD(LOG_TAG, "New layout value!");
+      
     }
   }
 };
@@ -45,7 +43,7 @@ class timeoutCallbacks: public BLECharacteristicCallbacks {
     std::string value = timeoutCharacteristic->getValue();
 
     if (value.length()>0) {
-      //ESP_LOGD(LOG_TAG, "New timeout value!");
+      
     }
   }
 };
@@ -56,7 +54,7 @@ class stateCallbacks: public BLECharacteristicCallbacks {
     std::string value = stateCharacteristic->getValue();
 
     if (value.length()>0) {
-      //ESP_LOGD(LOG_TAG, "New state value!");
+      
     }
   }
 };
