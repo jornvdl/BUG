@@ -105,20 +105,7 @@ BleKeyboard::BleKeyboard(std::string deviceName, std::string deviceManufacturer,
 void BleKeyboard::begin(void)
 {
   BLEDevice::init(deviceName);
-  BLEServer* pServer = BLEDevice::createServer();
-  pServer->setCallbacks(this);
-
-  hid = new BLEHIDDevice(pServer);
-  inputKeyboard = hid->inputReport(KEYBOARD_ID);  // <-- input REPORTID from report map
-  outputKeyboard = hid->outputReport(KEYBOARD_ID);
-  inputMediaKeys = hid->inputReport(MEDIA_KEYS_ID);
-
-  outputKeyboard->setCallbacks(this);
-
-  hid->manufacturer()->setValue(deviceManufacturer);
-
-  hid->pnp(0x02, 0xe502, 0xa111, 0x0210);
-  hid->hidInfo(0x00, 0x01);
+  BLEServer *pServer = BLEDevice::createServer();
 
   ////////////////////////////////////////////////////////////////////////////////////////
   // Below is added a new part: creating a custom GATT service next to the HID protocol //
@@ -151,6 +138,29 @@ void BleKeyboard::begin(void)
 	  StateUUID,
 	  BLECharacteristic::PROPERTY_WRITE
   );
+
+  ////////////////////////////////////////////////////////////////////////////////////////
+  // Above is the newly added part. //////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////
+
+
+  pServer->setCallbacks(this);
+
+  hid = new BLEHIDDevice(pServer);
+  inputKeyboard = hid->inputReport(KEYBOARD_ID);  // <-- input REPORTID from report map
+  outputKeyboard = hid->outputReport(KEYBOARD_ID);
+  inputMediaKeys = hid->inputReport(MEDIA_KEYS_ID);
+
+  outputKeyboard->setCallbacks(this);
+
+  hid->manufacturer()->setValue(deviceManufacturer);
+
+  hid->pnp(0x02, 0xe502, 0xa111, 0x0210);
+  hid->hidInfo(0x00, 0x01);
+
+  ////////////////////////////////////////////////////////////////////////////////////////
+  // Below is added a new part: creating a custom GATT service next to the HID protocol //
+  ////////////////////////////////////////////////////////////////////////////////////////
   
   // Create callbacks when a new item is received
   keyCharacteristic->setCallbacks(new keyCallbacks());
