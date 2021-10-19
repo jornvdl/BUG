@@ -15,7 +15,7 @@ class keyCallbacks: public BLECharacteristicCallbacks {
   }
 };
 
-// When new colour is received, update global variable and call Neopixel update. Acknowledge.
+// When new colour is received, update global variable and acknowledge.
 class colourCallbacks: public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *colourCharacteristic) {
     std::string value = colourCharacteristic->getValue();
@@ -26,7 +26,7 @@ class colourCallbacks: public BLECharacteristicCallbacks {
   }
 };
 
-// When new layout is received, update global variable and call Neopixel update. Acknowledge.
+// When new layout is received, update global variable and acknowledge.
 class ledCallbacks: public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *ledCharacteristic) {
     std::string value = ledCharacteristic->getValue();
@@ -37,7 +37,7 @@ class ledCallbacks: public BLECharacteristicCallbacks {
   }
 };
 
-// When new layout is received, update global variable and reset timer. Acknowledge.
+// When new timeout is received, update global variable and acknowledge.
 class timeoutCallbacks: public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *timeoutCharacteristic) {
     std::string value = timeoutCharacteristic->getValue();

@@ -26,6 +26,14 @@
 
 #include "GATTCallbacks.h"
 
+// Newly added code below
+// Used UUID's (https://www.uuidgenerator.net/)
+#define ServiceUUID "0ba682ae-4f1f-4e9b-be2a-809c224540fd"
+#define KeyUUID     "3e7f5770-d6b7-4709-9b4b-951c63f977ff"
+#define ColourUUID  "946a25ea-9c68-45f6-8c61-037cfd564214"
+#define LedUUID     "6f1f3ce2-cb88-4c5a-9ba1-6e19369b8736"
+#define TimeoutUUID "6de0e9a1-7f07-4e64-81b0-a8ca334bc86e"
+#define StateUUID   "99503c7d-6924-413c-bb7d-db7e913fb231"
 
 // Report IDs:
 #define KEYBOARD_ID 0x01
