@@ -108,20 +108,17 @@ void loop() {
   
   if(LastConfState == LOW && digitalRead(confPin) == HIGH) {       // button is pressed
     TimePressed = millis();
-    bleKeyboard.write(121);
     LastConfState = HIGH;
   }
   if(LastConfState == HIGH && digitalRead(confPin) == LOW) { // button is released
     TimeReleased = millis();
-    bleKeyboard.write(110);
     LastConfState = LOW;
   }
 
   long pressDuration = TimeReleased - TimePressed;
   
-  if( pressDuration < ShortPress && pressDuration != 0) {
+  if( pressDuration < ShortPress && pressDuration > 0) {
     n = n+1;
-    bleKeyboard.write(111);
     pressDuration = 0;
     TimeReleased = 0;
     TimePressed = 0;
@@ -134,7 +131,6 @@ void loop() {
   if( pressDuration > LongPress ) {
     n = 0;
     pressDuration = 0;
-        bleKeyboard.write(112);
     TimeReleased = 0;
     TimePressed = 0;
   }
