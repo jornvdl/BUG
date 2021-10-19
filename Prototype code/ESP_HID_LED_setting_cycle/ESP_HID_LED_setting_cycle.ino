@@ -96,7 +96,83 @@ void setup() {
 void loop() {
 
   key = KeyCycle[n];
-  
+
+  //LED hexadecimal to binary
+  if (LED < 0x8) {
+    LEDbin[0] = 0;
+    if (LED < 0x4) {
+      LEDbin[1] = 0;
+      if (LED < 0x2) {
+        LEDbin[2] = 0;
+        if (LED == 0x0) {
+          LEDbin[3] = 0;
+        }
+        else {
+          LEDbin[3] = 1;
+        }
+      }
+      else {
+        LEDbin[2] = 1;
+        if (LED > 0x2) {
+          LEDbin[3] = 1;
+        }
+        else {
+          LEDbin[3] = 0;
+        }
+      }
+    }
+    else {
+      LEDbin[1] = 1;
+      if (LED < 0x6) {
+        LEDbin[2] = 0;
+        if (LED == 0x4) {
+          LEDbin[3] = 0;
+        }
+        else {
+          LEDbin[3] = 1;
+        }
+      }
+      else {
+        LEDbin[2] = 1;
+        if (LED == 0x6) {
+          LEDbin[3] = 0;
+        }
+        else {
+          LEDbin[3] = 1;
+        }
+      }
+    }
+  }
+  else {
+    LEDbin[0] = 1;
+    if (LED < 0xC) {
+      LEDbin[1] = 0;
+      if (LED < 0xA) {
+        LEDbin[2] = 0;
+        if (LED == 0x8) {
+          LEDbin[3] = 0;
+        }
+        else {
+          LEDbin[3] = 1;
+        }
+      }
+      else {
+        LEDbin[2] = 1;
+        if (LED == 0xA) {
+          LEDbin[3] = 0;
+        }
+        else {
+          LEDbin[3] = 1;
+        }
+      }
+    }
+    else {
+      
+    }
+  }
+ 
+
+  //The Button press
   if (digitalRead(buttonPin) == HIGH && LastState == LOW) {
     bleKeyboard.press(key); //continuously send a spacebar when button is pressed
     LastState = HIGH;       //set last state to high
