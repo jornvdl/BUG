@@ -15,7 +15,6 @@
 #include "sdkconfig.h"
 
 #include "BleKeyboardGATT.h"
-#include "GATTCallbacks.h"
 
 #if defined(CONFIG_ARDUHAL_ESP_LOG)
   #include "esp32-hal-log.h"
@@ -24,6 +23,8 @@
   #include "esp_log.h"
   static const char* LOG_TAG = "BLEDevice";
 #endif
+
+#include "GATTCallbacks.h"
 
 
 // Report IDs:
@@ -119,13 +120,6 @@ void BleKeyboard::begin(void)
   hid->pnp(0x02, 0xe502, 0xa111, 0x0210);
   hid->hidInfo(0x00, 0x01);
 
-  BLESecurity* pSecurity = new BLESecurity();
-
-  pSecurity->setAuthenticationMode(ESP_LE_AUTH_BOND);
-
-  hid->reportMap((uint8_t*)_hidReportDescriptor, sizeof(_hidReportDescriptor));
-  hid->startServices();
-
   ////////////////////////////////////////////////////////////////////////////////////////
   // Below is added a new part: creating a custom GATT service next to the HID protocol //
   ////////////////////////////////////////////////////////////////////////////////////////
@@ -168,6 +162,13 @@ void BleKeyboard::begin(void)
   ////////////////////////////////////////////////////////////////////////////////////////
   // Above is the newly added part. //////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////
+
+  BLESecurity* pSecurity = new BLESecurity();
+
+  pSecurity->setAuthenticationMode(ESP_LE_AUTH_BOND);
+
+  hid->reportMap((uint8_t*)_hidReportDescriptor, sizeof(_hidReportDescriptor));
+  hid->startServices();
 
   onStarted(pServer);
 
