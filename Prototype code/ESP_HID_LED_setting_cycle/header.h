@@ -27,10 +27,12 @@ char s = 115;
 char d = 100;
 
 char KeyCycle[] = {w, a, s, d};
+int LEDbin[] = {0,0,0,0};
 
 //select the desired key and colour
 #define key          arrowup
 #define colour       GREEN
+#define LED          0x1
 
 
 
