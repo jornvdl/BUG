@@ -30,8 +30,11 @@ void setup() {
   pinMode(buttonPin, INPUT_PULLDOWN); //set buttonpin as pulldown so standard low
   pinMode(confPin, INPUT_PULLDOWN);   //set conf button pin as pulldown so standard low
   pixels.begin();
-  
-  //if BUG set to arrowup light up the top led in the selected colour
+
+  pixels.setBrightness(15);   
+
+  TimeSleep = millis();
+  /*if BUG set to arrowup light up the top led in the selected colour
   if (key == arrowup) {
     pixels.clear();                                   //reset the pixels
     pixels.setBrightness(15);                         //set the pixel brightness
@@ -91,12 +94,36 @@ void setup() {
     pixels.show();
   
   }  
+*/
 }
 
 void loop() {
-
+  
+  if ((millis() - TimeSleep) > 300000) {
+     pixels.clear();
+     pixels.show();
+     esp_deep_sleep_start();
+  }
+  
   key = KeyCycle[n];
+  //Testing ifs for LED shift with keys
+  if (key == w) {
+    LED = 0x1;
+  }
+  else if (key == a){
+    LED = 0x2;
+  }
+  else if (key == s) {
+    LED = 0x4;
+  }
+  else if (key == d) {
+    LED = 0x8;
+  }
+  else {
+    LED = 0xF;
+  }
 
+  
   //LED hexadecimal to binary
   if (LED < 0x8) {
     LEDbin[0] = 0;
@@ -144,6 +171,7 @@ void loop() {
     }
   }
   else {
+    
     LEDbin[0] = 1;
     if (LED < 0xC) {
       LEDbin[1] = 0;
@@ -167,15 +195,64 @@ void loop() {
       }
     }
     else {
-      
+      LEDbin[1] = 1;
+      if (LED < 0xE) {
+        LEDbin[2] = 0;
+        if (LED == 0xC) {
+          LEDbin[3] = 0;
+        }
+        else {
+          LEDbin[3] = 1;
+        }
+      }
+      else {
+        LEDbin[2] = 1;
+        if (LED == 0xE) {
+          LEDbin[3] = 0;
+        }
+        else {
+          LEDbin[3] = 1;
+        }
+      }
     }
   }
- 
+
+ //Set neopixels according to LEDbin top = LEDbin[3], left = LEDbin[2], down = LEDbin[1], right = LEDbin[0]
+ //neo pixels button top: left = 0, top = 1, middle = 2, down = 3, right = 4;
+ if (LEDbin[0] == 1) {
+  //pixels.clear();
+  pixels.setPixelColor(4, pixels.Color(colour));
+ }
+ else {
+  //pixels.clear();
+  pixels.setPixelColor(4, pixels.Color(OFF));
+ }
+ if (LEDbin[1] == 1) {
+  pixels.setPixelColor(2, pixels.Color(colour));
+ }
+ else {
+  pixels.setPixelColor(2, pixels.Color(OFF));
+ }
+ if (LEDbin[2] == 1) {
+  pixels.setPixelColor(0, pixels.Color(colour));
+ }
+ else {
+  pixels.setPixelColor(0, pixels.Color(OFF));
+ }
+ if (LEDbin[3] == 1) {
+  pixels.setPixelColor(1, pixels.Color(colour));
+  pixels.show();
+ }
+ else {
+  pixels.setPixelColor(1, pixels.Color(OFF));
+  pixels.show();
+ }
 
   //The Button press
   if (digitalRead(buttonPin) == HIGH && LastState == LOW) {
     bleKeyboard.press(key); //continuously send a spacebar when button is pressed
     LastState = HIGH;       //set last state to high
+    TimeSleep = millis();
   }
   if (digitalRead(buttonPin) == LOW && LastState == HIGH) {
     bleKeyboard.release(key);  //stop sending the spacebar when the button is released
@@ -185,6 +262,7 @@ void loop() {
   if(LastConfState == LOW && digitalRead(confPin) == HIGH) {       // button is pressed
     TimePressed = millis();
     LastConfState = HIGH;
+    TimeSleep = millis();
   }
   if(LastConfState == HIGH && digitalRead(confPin) == LOW) { // button is released
     TimeReleased = millis();
@@ -204,11 +282,19 @@ void loop() {
     }  
   }
   
-  if( pressDuration > LongPress ) {
+  if( pressDuration > LongPress && pressDuration < SleepPress) {
     n = 0;
     pressDuration = 0;
     TimeReleased = 0;
     TimePressed = 0;
   }
+
+  if (pressDuration > SleepPress) {
+      pixels.clear();
+      pixels.show();
+      esp_deep_sleep_start();
+
+  }
+
 
 }

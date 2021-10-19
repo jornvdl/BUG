@@ -32,18 +32,19 @@ int LEDbin[] = {0,0,0,0};
 //select the desired key and colour
 #define key          arrowup
 #define colour       GREEN
-#define LED          0x1
-
+int LED = 0x0;
+  
 
 
 
 //Rotation at press of conf button
 const int ShortPress = 3000; //short press shorter than 1000 milliseconds
 const int LongPress = 3000;  //long press longer than 3000 miliseconds
-
+const int SleepPress = 7000;
 int LastState = LOW;
 int CurrentConfState;
 int LastConfState = LOW;
 unsigned long TimePressed = 0;
 unsigned long TimeReleased = 0;
-int n = 1;
+int n = 0;
+unsigned long TimeSleep = 0;
