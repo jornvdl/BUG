@@ -24,16 +24,120 @@
   static const char* LOG_TAG = "BLEDevice";
 #endif
 
-#include "GATTCallbacks.h"
+int keystroke;
+int colour[4]; // each int in range 0~255
+int layout[4];
+int timeout;
+
+// When new key is received, update global variable and acknowledge.
+class keyCallbacks: public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *keyCharacteristic) {
+    std::string value = keyCharacteristic->getValue();
+
+    if (value.length()>0) {
+      // TODO Check if received value corresponds to format
+      keystroke = value[0];
+      keyCharacteristic->setValue(keystroke);
+    }
+  }
+};
+// When new colour is received, update global variable and acknowledge.
+class colourCallbacks: public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *colourCharacteristic) {
+    std::string value = colourCharacteristic->getValue();
+
+    if (value.length()>0) {
+      // TODO Check if received value corresponds to format (four hex numbers, 0 to F)
+      for (int i=0; i<4; i++){
+        int t = value[i];
+        switch (t) {
+          case 48: colour[i]=0x0F;
+          case 49: colour[i]=0x1F;
+          case 50: colour[i]=0x2F;
+          case 51: colour[i]=0x3F;
+          case 52: colour[i]=0x4F;
+          case 53: colour[i]=0x5F;
+          case 54: colour[i]=0x6F;
+          case 55: colour[i]=0x7F;
+          case 56: colour[i]=0x8F;
+          case 57: colour[i]=0x9F;
+          case 65: colour[i]=0xAF;
+          case 66: colour[i]=0xBF;
+          case 67: colour[i]=0xCF;
+          case 68: colour[i]=0xDF;
+          case 69: colour[i]=0xEF;
+          case 70: colour[i]=0xFF;
+        };
+      };
+      //colourCharacteristic->setValue(colour[0]+colour[1]+colour[2]+colour[3]);
+    };
+  }
+};
+// When new layout is received, update global variable and acknowledge.
+class ledCallbacks: public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *ledCharacteristic) {
+    std::string value = ledCharacteristic->getValue();
+    int t = value[0];
+    if (value.length()>0) {
+      switch(t) {
+        case 48: layout[0]=0; layout[1]=0; layout[2]=0; layout[3]=0;
+        case 49: layout[0]=0; layout[1]=0; layout[2]=0; layout[3]=1;
+        case 50: layout[0]=0; layout[1]=0; layout[2]=1; layout[3]=0;
+        case 51: layout[0]=0; layout[1]=0; layout[2]=1; layout[3]=1;
+        case 52: layout[0]=0; layout[1]=1; layout[2]=0; layout[3]=0;
+        case 53: layout[0]=0; layout[1]=1; layout[2]=0; layout[3]=1;
+        case 54: layout[0]=0; layout[1]=1; layout[2]=1; layout[3]=0;
+        case 55: layout[0]=0; layout[1]=1; layout[2]=1; layout[3]=1;
+        case 56: layout[0]=1; layout[1]=0; layout[2]=0; layout[3]=0;
+        case 57: layout[0]=1; layout[1]=0; layout[2]=0; layout[3]=1;
+        case 65: layout[0]=1; layout[1]=0; layout[2]=1; layout[3]=0;
+        case 66: layout[0]=1; layout[1]=0; layout[2]=1; layout[3]=1;
+        case 67: layout[0]=1; layout[1]=1; layout[2]=0; layout[3]=0;
+        case 68: layout[0]=1; layout[1]=1; layout[2]=0; layout[3]=1;
+        case 69: layout[0]=1; layout[1]=1; layout[2]=1; layout[3]=0;
+        case 70: layout[0]=1; layout[1]=1; layout[2]=1; layout[3]=1;
+        default: layout[0]=0; layout[1]=0; layout[2]=0; layout[3]=0;
+      };
+      //ledCharacteristic->setValue(layout[0]+layout[1]+layout[2]+layout[3]);
+    };
+  }
+};
+// When new timeout is received, update global variable and acknowledge.
+class timeoutCallbacks: public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *timeoutCharacteristic) {
+    std::string value = timeoutCharacteristic->getValue();
+
+    if (value.length()>0) {
+      // TODO Check if received value corresponds to format
+      timeout = 0;
+      for (int i = 0; i < value.length(); i++) {
+        if (i>0) {timeout * 10;}
+        timeout = timeout + value[i] - 48; // minus 48 for the (hard coded) conversion of ASCII values to integers
+      }
+      timeoutCharacteristic->setValue(timeout);
+    };
+  }
+};
+// When state is received, check is reset (then do this) or call. Reply with (resetted) states.
+class stateCallbacks: public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *stateCharacteristic) {
+    std::string value = stateCharacteristic->getValue();
+
+    if (value.length()>0) {
+      // Check if received value corresponds to format
+      // If yes: do stuff
+    };
+  }
+};
 
 // Newly added code below
 // Used UUID's (https://www.uuidgenerator.net/)
 #define ServiceUUID "0ba682ae-4f1f-4e9b-be2a-809c224540fd"
-#define KeyUUID     "3e7f5770-d6b7-4709-9b4b-951c63f977ff"
-#define ColourUUID  "946a25ea-9c68-45f6-8c61-037cfd564214"
-#define LedUUID     "6f1f3ce2-cb88-4c5a-9ba1-6e19369b8736"
-#define TimeoutUUID "6de0e9a1-7f07-4e64-81b0-a8ca334bc86e"
-#define StateUUID   "99503c7d-6924-413c-bb7d-db7e913fb231"
+#define KeyUUID     "3e7f5770-d6b7-4709-9b4b-951c63f97aaa"
+#define ColourUUID  "946a25ea-9c68-45f6-8c61-037cfd564bbb"
+#define LedUUID     "6f1f3ce2-cb88-4c5a-9ba1-6e19369b8ccc"
+#define TimeoutUUID "6de0e9a1-7f07-4e64-81b0-a8ca334bcddd"
+#define StateUUID   "99503c7d-6924-413c-bb7d-db7e913fbeee"
 
 // Report IDs:
 #define KEYBOARD_ID 0x01
@@ -403,6 +507,7 @@ uint8_t USBPutChar(uint8_t c);
 size_t BleKeyboard::press(uint8_t k)
 {
 	uint8_t i;
+	// Check if it is possible to hardcode the use of 'keystroke' var
 	if (k >= 136) {			// it's a non-printing key (not a modifier)
 		k = k - 136;
 	} else if (k >= 128) {	// it's a modifier key
@@ -569,4 +674,40 @@ void BleKeyboard::delay_ms(uint64_t ms) {
     }
     while(esp_timer_get_time() < e) {}
   }
+}
+
+int* BleKeyboard::getKey() { // not needed when using hardcoded keys in lib
+	return &keystroke;
+}
+
+int* BleKeyboard::getTimeout() {
+	return &timeout;
+}
+
+int* BleKeyboard::getColour() {
+	return &colour[0];
+}
+
+int* BleKeyboard::getLayout() {
+	return &layout[0];
+}
+
+void BleKeyboard::setKey(int* k) {
+	keystroke = *k;
+}
+
+void BleKeyboard::setTimeout(int* t) {
+	timeout = *t;
+}
+
+void BleKeyboard::setColour(int* c) {
+	for (int i = 0; i < 4; i++) {
+		colour[i] = *(c+i);
+	}
+}
+
+void BleKeyboard::setLayout(int* l) {
+	for (int i = 0; i < 4; i++) {
+		layout[i] = *(l+i);
+	}
 }

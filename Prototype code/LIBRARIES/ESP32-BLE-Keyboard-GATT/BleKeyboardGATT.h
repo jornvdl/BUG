@@ -138,6 +138,14 @@ public:
   void setBatteryLevel(uint8_t level);
   void setName(std::string deviceName);  
   void setDelay(uint32_t ms);
+  int* getKey();
+  int* getTimeout();
+  int* getColour();
+  int* getLayout();
+  void setKey(int* k);
+  void setTimeout(int* t);
+  void setColour(int* c);
+  void setLayout(int* l);
 protected:
   virtual void onStarted(BLEServer *pServer) { };
   virtual void onConnect(BLEServer* pServer) override;

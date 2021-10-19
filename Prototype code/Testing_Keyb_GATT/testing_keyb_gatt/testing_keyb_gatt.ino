@@ -1,7 +1,7 @@
 #include <BleKeyboardGATT.h>
-#include <GATTCallbacks.h>
 
 BleKeyboard bleKeyboard("Gamer-BUG","TU Delft");
+
 
 void setup() {
   // put your setup code here, to run once:
