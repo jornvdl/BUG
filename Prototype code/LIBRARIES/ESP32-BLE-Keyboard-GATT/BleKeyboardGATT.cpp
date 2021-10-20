@@ -24,109 +24,62 @@
   static const char* LOG_TAG = "BLEDevice";
 #endif
 
-int keystroke;
-int colour[4]; // each int in range 0~255
-int layout[4];
-int timeout;
+int keystroke;  // store integer value of button
+int colour[3];  // each int in range 0x00~0xFF
+int layout;     // integer representing layout of indicator leds
+int timeout;    // store integer value of timeout before sleep in seconds
+bool flag_fact; // flag to main program if systems needs to factory reset
+bool flag_bkey; // flag to main program to show key bind is set via BLE
+
 
 // When new key is received, update global variable and acknowledge.
 class keyCallbacks: public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *keyCharacteristic) {
-    std::string value = keyCharacteristic->getValue();
+    uint8_t *data = keyCharacteristic->getData();
 
-    if (value.length()>0) {
-      // TODO Check if received value corresponds to format
-      keystroke = value[0];
+    if (*data>0 && *data<256) {
+      keystroke = *data;
+      flag_bkey == true;
       keyCharacteristic->setValue(keystroke);
     }
   }
 };
-// When new colour is received, update global variable and acknowledge.
-class colourCallbacks: public BLECharacteristicCallbacks {
-  void onWrite(BLECharacteristic *colourCharacteristic) {
-    std::string value = colourCharacteristic->getValue();
-
-    if (value.length()>0) {
-      // TODO Check if received value corresponds to format (four hex numbers, 0 to F)
-      for (int i=0; i<4; i++){
-        int t = value[i];
-        switch (t) {
-          case 48: colour[i]=0x0F;
-          case 49: colour[i]=0x1F;
-          case 50: colour[i]=0x2F;
-          case 51: colour[i]=0x3F;
-          case 52: colour[i]=0x4F;
-          case 53: colour[i]=0x5F;
-          case 54: colour[i]=0x6F;
-          case 55: colour[i]=0x7F;
-          case 56: colour[i]=0x8F;
-          case 57: colour[i]=0x9F;
-          case 65: colour[i]=0xAF;
-          case 66: colour[i]=0xBF;
-          case 67: colour[i]=0xCF;
-          case 68: colour[i]=0xDF;
-          case 69: colour[i]=0xEF;
-          case 70: colour[i]=0xFF;
-        };
-      };
-      //colourCharacteristic->setValue(colour[0]+colour[1]+colour[2]+colour[3]);
-    };
-  }
-};
 // When new layout is received, update global variable and acknowledge.
-class ledCallbacks: public BLECharacteristicCallbacks {
-  void onWrite(BLECharacteristic *ledCharacteristic) {
-    std::string value = ledCharacteristic->getValue();
-    int t = value[0];
-    if (value.length()>0) {
-      switch(t) {
-        case 48: layout[0]=0; layout[1]=0; layout[2]=0; layout[3]=0;
-        case 49: layout[0]=0; layout[1]=0; layout[2]=0; layout[3]=1;
-        case 50: layout[0]=0; layout[1]=0; layout[2]=1; layout[3]=0;
-        case 51: layout[0]=0; layout[1]=0; layout[2]=1; layout[3]=1;
-        case 52: layout[0]=0; layout[1]=1; layout[2]=0; layout[3]=0;
-        case 53: layout[0]=0; layout[1]=1; layout[2]=0; layout[3]=1;
-        case 54: layout[0]=0; layout[1]=1; layout[2]=1; layout[3]=0;
-        case 55: layout[0]=0; layout[1]=1; layout[2]=1; layout[3]=1;
-        case 56: layout[0]=1; layout[1]=0; layout[2]=0; layout[3]=0;
-        case 57: layout[0]=1; layout[1]=0; layout[2]=0; layout[3]=1;
-        case 65: layout[0]=1; layout[1]=0; layout[2]=1; layout[3]=0;
-        case 66: layout[0]=1; layout[1]=0; layout[2]=1; layout[3]=1;
-        case 67: layout[0]=1; layout[1]=1; layout[2]=0; layout[3]=0;
-        case 68: layout[0]=1; layout[1]=1; layout[2]=0; layout[3]=1;
-        case 69: layout[0]=1; layout[1]=1; layout[2]=1; layout[3]=0;
-        case 70: layout[0]=1; layout[1]=1; layout[2]=1; layout[3]=1;
-        default: layout[0]=0; layout[1]=0; layout[2]=0; layout[3]=0;
-      };
-      //ledCharacteristic->setValue(layout[0]+layout[1]+layout[2]+layout[3]);
+class indicatorCallbacks: public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *indicatorCharacteristic) {
+    uint8_t *data = indicatorCharacteristic->getData();
+    if (*data>0) {
+      colour[0] = *data;
+      colour[1] = *(data+1);
+      colour[2] = *(data+2);
+      layout = *(data+3);
+
+      int returnValue = (layout << 24) + (colour[2] << 16) + (colour[1] << 8) + colour[0];
+      indicatorCharacteristic->setValue(returnValue);
     };
   }
 };
 // When new timeout is received, update global variable and acknowledge.
 class timeoutCallbacks: public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *timeoutCharacteristic) {
-    std::string value = timeoutCharacteristic->getValue();
-
-    if (value.length()>0) {
-      // TODO Check if received value corresponds to format
-      timeout = 0;
-      for (int i = 0; i < value.length(); i++) {
-        if (i>0) {timeout * 10;}
-        timeout = timeout + value[i] - 48; // minus 48 for the (hard coded) conversion of ASCII values to integers
-      }
+    uint8_t *data = timeoutCharacteristic->getData();
+    if (*(data+1)>0 || *data > 0) {
+      timeout = *data * 256 + *(data+1);
       timeoutCharacteristic->setValue(timeout);
-    };
+    }
   }
 };
 // When state is received, check is reset (then do this) or call. Reply with (resetted) states.
 class stateCallbacks: public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *stateCharacteristic) {
-    std::string value = stateCharacteristic->getValue();
+    uint8_t *data = stateCharacteristic->getData();
 
-    if (value.length()>0) {
-      // Check if received value corresponds to format
-      // If yes: do stuff
-    };
+    if (*data==1) {
+      // Return data, but outside this scope. TO DO! TODO!
+    }
+    else if (*data==2) {
+      flag_fact == true;
+    }
   }
 };
 
@@ -134,10 +87,9 @@ class stateCallbacks: public BLECharacteristicCallbacks {
 // Used UUID's (https://www.uuidgenerator.net/)
 #define ServiceUUID "0ba682ae-4f1f-4e9b-be2a-809c224540fd"
 #define KeyUUID     "3e7f5770-d6b7-4709-9b4b-951c63f97aaa"
-#define ColourUUID  "946a25ea-9c68-45f6-8c61-037cfd564bbb"
-#define LedUUID     "6f1f3ce2-cb88-4c5a-9ba1-6e19369b8ccc"
-#define TimeoutUUID "6de0e9a1-7f07-4e64-81b0-a8ca334bcddd"
-#define StateUUID   "99503c7d-6924-413c-bb7d-db7e913fbeee"
+#define IndicUUID   "6f1f3ce2-cb88-4c5a-9ba1-6e19369b8bbb"
+#define TimeoutUUID "6de0e9a1-7f07-4e64-81b0-a8ca334bcccc"
+#define StateUUID   "99503c7d-6924-413c-bb7d-db7e913fbddd"
 
 // Report IDs:
 #define KEYBOARD_ID 0x01
@@ -231,13 +183,8 @@ void BleKeyboard::begin(void)
 	  BLECharacteristic::PROPERTY_WRITE |
 	  BLECharacteristic::PROPERTY_READ
   );
-  BLECharacteristic *colourCharacteristic = pService->createCharacteristic(
-	  ColourUUID,
-	  BLECharacteristic::PROPERTY_WRITE |
-	  BLECharacteristic::PROPERTY_READ
-  );
-  BLECharacteristic *ledCharacteristic = pService->createCharacteristic(
-	  LedUUID,
+  BLECharacteristic *indicatorCharacteristic = pService->createCharacteristic(
+	  IndicUUID,
 	  BLECharacteristic::PROPERTY_WRITE |
 	  BLECharacteristic::PROPERTY_READ
   );
@@ -278,8 +225,7 @@ void BleKeyboard::begin(void)
   
   // Create callbacks when a new item is received
   keyCharacteristic->setCallbacks(new keyCallbacks());
-  colourCharacteristic->setCallbacks(new colourCallbacks());
-  ledCharacteristic->setCallbacks(new ledCallbacks());
+  indicatorCharacteristic->setCallbacks(new indicatorCallbacks());
   timeoutCharacteristic->setCallbacks(new timeoutCallbacks());
   stateCharacteristic->setCallbacks(new stateCallbacks());
 
@@ -546,6 +492,49 @@ size_t BleKeyboard::press(uint8_t k)
 	return 1;
 }
 
+size_t BleKeyboard::press()
+{
+  uint8_t k = keystroke;
+  uint8_t i;
+  // Check if it is possible to hardcode the use of 'keystroke' var
+  if (k >= 136) {     // it's a non-printing key (not a modifier)
+    k = k - 136;
+  } else if (k >= 128) {  // it's a modifier key
+    _keyReport.modifiers |= (1<<(k-128));
+    k = 0;
+  } else {        // it's a printing key
+    k = pgm_read_byte(_asciimap + k);
+    if (!k) {
+      setWriteError();
+      return 0;
+    }
+    if (k & 0x80) {           // it's a capital letter or other character reached with shift
+      _keyReport.modifiers |= 0x02; // the left shift modifier
+      k &= 0x7F;
+    }
+  }
+
+  // Add k to the key report only if it's not already present
+  // and if there is an empty slot.
+  if (_keyReport.keys[0] != k && _keyReport.keys[1] != k &&
+    _keyReport.keys[2] != k && _keyReport.keys[3] != k &&
+    _keyReport.keys[4] != k && _keyReport.keys[5] != k) {
+
+    for (i=0; i<6; i++) {
+      if (_keyReport.keys[i] == 0x00) {
+        _keyReport.keys[i] = k;
+        break;
+      }
+    }
+    if (i == 6) {
+      setWriteError();
+      return 0;
+    }
+  }
+  sendReport(&_keyReport);
+  return 1;
+}
+
 size_t BleKeyboard::press(const MediaKeyReport k)
 {
     uint16_t k_16 = k[1] | (k[0] << 8);
@@ -689,7 +678,7 @@ int* BleKeyboard::getColour() {
 }
 
 int* BleKeyboard::getLayout() {
-	return &layout[0];
+	return &layout;
 }
 
 void BleKeyboard::setKey(int* k) {
@@ -701,13 +690,11 @@ void BleKeyboard::setTimeout(int* t) {
 }
 
 void BleKeyboard::setColour(int* c) {
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 3; i++) {
 		colour[i] = *(c+i);
 	}
 }
 
 void BleKeyboard::setLayout(int* l) {
-	for (int i = 0; i < 4; i++) {
-		layout[i] = *(l+i);
-	}
+	layout = *l;
 }

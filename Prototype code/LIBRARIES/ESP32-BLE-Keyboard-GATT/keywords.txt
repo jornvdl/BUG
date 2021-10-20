@@ -18,6 +18,14 @@ release	KEYWORD2
 releaseAll	KEYWORD2
 setBatteryLevel	KEYWORD2
 isConnected	KEYWORD2
+getKey		KEYWORD2
+getTimeout	KEYWORD2
+getColour	KEYWORD2
+getLayout	KEYWORD2
+setKey		KEYWORD2
+setTimeout	KEYWORD2
+setColour	KEYWORD2
+setLayout	KEYWORD2
 
 #######################################
 # Constants
