@@ -34,67 +34,7 @@ void setup() {
   pixels.setBrightness(15);   
 
   TimeSleep = millis();
-  /*if BUG set to arrowup light up the top led in the selected colour
-  if (key == arrowup) {
-    pixels.clear();                                   //reset the pixels
-    pixels.setBrightness(15);                         //set the pixel brightness
-    pixels.setPixelColor(0, pixels.Color(OFF));       //set the pixels corresponding to the key to the selected colour
-    pixels.setPixelColor(1, pixels.Color(colour));
-    pixels.setPixelColor(2, pixels.Color(OFF));
-    pixels.setPixelColor(3, pixels.Color(OFF));
-    pixels.setPixelColor(4, pixels.Color(OFF));
-    pixels.show();                                    //display the pixels according to the settings
-
-  }
-  //if BUG set to space light up the middle row of leds in the selected colour
-  if (key == space) {
-    pixels.clear();
-    pixels.setBrightness(15);  
-    pixels.setPixelColor(0, pixels.Color(colour));
-    pixels.setPixelColor(1, pixels.Color(OFF));
-    pixels.setPixelColor(2, pixels.Color(colour));
-    pixels.setPixelColor(3, pixels.Color(OFF));
-    pixels.setPixelColor(4, pixels.Color(colour));
-    pixels.show();
-
-  }  
-  //if BUG set to arrowdown light up the botton led in the selected colour
-  if (key == arrowdown) {
-    pixels.clear();
-    pixels.setBrightness(15);  
-    pixels.setPixelColor(0, pixels.Color(OFF));
-    pixels.setPixelColor(1, pixels.Color(OFF));
-    pixels.setPixelColor(2, pixels.Color(OFF));
-    pixels.setPixelColor(3, pixels.Color(colour));
-    pixels.setPixelColor(4, pixels.Color(OFF));
-    pixels.show();
-
-  }  
-  //if BUG set to arrowright light up the right led in the selected colour
-  if (key == arrowright) {
-    pixels.clear();
-    pixels.setBrightness(15);  
-    pixels.setPixelColor(0, pixels.Color(OFF));
-    pixels.setPixelColor(1, pixels.Color(OFF));
-    pixels.setPixelColor(2, pixels.Color(OFF));
-    pixels.setPixelColor(3, pixels.Color(OFF));
-    pixels.setPixelColor(4, pixels.Color(colour));
-    pixels.show();
-
-  }  
-  //if BUG set to arrowleft light up the left led in the selected colour
-  if (key == arrowleft) { 
-    pixels.clear();
-    pixels.setBrightness(15);  
-    pixels.setPixelColor(0, pixels.Color(colour));
-    pixels.setPixelColor(1, pixels.Color(OFF));
-    pixels.setPixelColor(2, pixels.Color(OFF));
-    pixels.setPixelColor(3, pixels.Color(OFF));
-    pixels.setPixelColor(4, pixels.Color(OFF));
-    pixels.show();
-  
-  }  
-*/
+ // uint32_t ALL = pixels.Color(255, 255, 255);
 }
 
 void loop() {
@@ -263,6 +203,20 @@ void loop() {
     TimePressed = millis();
     LastConfState = HIGH;
     TimeSleep = millis();
+    }
+  while(LastConfState == HIGH && digitalRead(confPin) == HIGH) {
+    if((millis() - TimePressed) > 3000 && (millis() - TimePressed) < 7000) {
+      pixels.clear();
+      pixels.show();
+    }
+    if((millis() - TimePressed) > 7000) {
+      pixels.fill(pixels.Color(colour),0,5);
+      pixels.show();
+      delay(500);
+      pixels.clear();
+      pixels.show();
+      delay(500);
+    }
   }
   if(LastConfState == HIGH && digitalRead(confPin) == LOW) { // button is released
     TimeReleased = millis();
