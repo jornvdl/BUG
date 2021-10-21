@@ -48,3 +48,4 @@ unsigned long TimePressed = 0;
 unsigned long TimeReleased = 0;
 int n = 0;
 unsigned long TimeSleep = 0;
+unsigned long timeupdate = 0;

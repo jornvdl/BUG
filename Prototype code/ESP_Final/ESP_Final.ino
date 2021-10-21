@@ -34,20 +34,28 @@ void setup() {
   int colour[3] = {0x0F, 0x0E, 0x0D}; //random vars
   int layout = 0x0F;  // 16, all on
   int keybind = 0x20; //space
-  int timeout = 300000;
+  int timeout = 300;
+
   
   bleKeyboard.setTimeout(&timeout);
   bleKeyboard.setKey(&keybind);
   bleKeyboard.setColour(&colour[0]);
   bleKeyboard.setLayout(&layout);
-
+  //bleKeyboard.rstUpdate();
   TimeSleep = millis();
+  timeupdate = *bleKeyboard.getTimeout();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
+
+  if (timeupdate != *bleKeyboard.getTimeout()) {
+    TimeSleep = millis();
+    timeupdate = *bleKeyboard.getTimeout();
+  }
+
   
-  if ((millis() - TimeSleep) > *bleKeyboard.getTimeout()) {
+  if ((millis()/1000 - TimeSleep/1000) > *bleKeyboard.getTimeout()) {
      pixels.clear();
      pixels.show();
      esp_deep_sleep_start();
