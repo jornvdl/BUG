@@ -1,78 +1,69 @@
+
+
 /*
-@Title BUG ESP code including indication LEDs Devkit
-@Author Floris van der Heijde
+@Title BUG ESP Final code including gatt protocol
+@Authors Floris van der Heijde, Jorn van der Linden
 @Delft University of Technology
-@Date 05-10-2021
+@Date 21/10/2021
 
-@Hardware
-ESP-C3-12F kit dev board
-neopixles
-
-18 Pulldown button pin
-19 Neopixle output pin
+Button pin 18 pulldown
+Neopixel data pin 19 pulldown
+Conf button pin 5 pulldown
 
 */
 #include "header.h"
-#include <BleKeyboard.h>
+#include <BleKeyboardGATT.h>
 #include <Adafruit_NeoPixel.h>
-//#include <BleKeyboardGatt.h>
 
-//Set the name of the BUG(Bluetooth Ultrasimple Gamepad
-BleKeyboard bleKeyboard("BUG-ESP");
+//Set name of bluetooth keyboard
+BleKeyboard bleKeyboard("Gamer-BUG");
 
-//NEOPIXEL known numbers button on the top: 0=left, 1=top, 2=centre, 3=bottom, 4=right
-
+//Initialise the neopixels as pixels
 Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIN, NEO_GRB + NEO_KHZ800);
-#define DELAYVAL 500 // Time (in milliseconds) to pause between pixels
-
+#define DELAYVAL 500 // Time in milliseconds to pause between pixels
 
 void setup() {
-  bleKeyboard.begin();                //start ble keyboard
-  pinMode(buttonPin, INPUT_PULLDOWN); //set buttonpin as pulldown so standard low
-  pinMode(confPin, INPUT_PULLDOWN);   //set conf button pin as pulldown so standard low
+  // put your setup code here, to run once:
+ // Serial.begin(115200);
+  bleKeyboard.begin();
   pixels.begin();
-
-  pixels.setBrightness(15);   
+  
+  pinMode(buttonPin, INPUT_PULLDOWN);
+  pinMode(confPin, INPUT_PULLDOWN);
+  
+  int colour[3] = {0x0F, 0x0E, 0x0D}; //random vars
+  int layout = 0x0F;  // 16, all on
+  int keybind = 0x20; //space
+  int timeout = 300000;
+  
+  bleKeyboard.setTimeout(&timeout);
+  bleKeyboard.setKey(&keybind);
+  bleKeyboard.setColour(&colour[0]);
+  bleKeyboard.setLayout(&layout);
 
   TimeSleep = millis();
- // uint32_t ALL = pixels.Color(255, 255, 255);
 }
 
 void loop() {
+  // put your main code here, to run repeatedly:
   
-  if ((millis() - TimeSleep) > 300000) {
+  if ((millis() - TimeSleep) > *bleKeyboard.getTimeout()) {
      pixels.clear();
      pixels.show();
      esp_deep_sleep_start();
   }
-  
-  key = KeyCycle[n];
-  //Testing ifs for LED shift with keys
-  if (key == w) {
-    LED = 0x1;
-  }
-  else if (key == a){
-    LED = 0x2;
-  }
-  else if (key == s) {
-    LED = 0x4;
-  }
-  else if (key == d) {
-    LED = 0x8;
-  }
-  else {
-    LED = 0xF;
-  }
 
-  
-  //LED hexadecimal to binary
-  if (LED < 0x8) {
+  int layout = *bleKeyboard.getLayout();
+  int colour[3] = {*bleKeyboard.getColour(),*(bleKeyboard.getColour()+1),*(bleKeyboard.getColour()+2)};
+  //LED layout hexadecimal to binary
+    //LED hexadecimal to binary
+  if (layout < 0x8) {
     LEDbin[0] = 0;
-    if (LED < 0x4) {
+    if (layout < 0x4) {
       LEDbin[1] = 0;
-      if (LED < 0x2) {
+      if (layout < 0x2) {
         LEDbin[2] = 0;
-        if (LED == 0x0) {
+        if (layout == 0x0) {
           LEDbin[3] = 0;
         }
         else {
@@ -81,7 +72,7 @@ void loop() {
       }
       else {
         LEDbin[2] = 1;
-        if (LED > 0x2) {
+        if (layout > 0x2) {
           LEDbin[3] = 1;
         }
         else {
@@ -91,9 +82,9 @@ void loop() {
     }
     else {
       LEDbin[1] = 1;
-      if (LED < 0x6) {
+      if (layout < 0x6) {
         LEDbin[2] = 0;
-        if (LED == 0x4) {
+        if (layout == 0x4) {
           LEDbin[3] = 0;
         }
         else {
@@ -102,7 +93,7 @@ void loop() {
       }
       else {
         LEDbin[2] = 1;
-        if (LED == 0x6) {
+        if (layout == 0x6) {
           LEDbin[3] = 0;
         }
         else {
@@ -114,11 +105,11 @@ void loop() {
   else {
     
     LEDbin[0] = 1;
-    if (LED < 0xC) {
+    if (layout < 0xC) {
       LEDbin[1] = 0;
-      if (LED < 0xA) {
+      if (layout < 0xA) {
         LEDbin[2] = 0;
-        if (LED == 0x8) {
+        if (layout == 0x8) {
           LEDbin[3] = 0;
         }
         else {
@@ -127,7 +118,7 @@ void loop() {
       }
       else {
         LEDbin[2] = 1;
-        if (LED == 0xA) {
+        if (layout == 0xA) {
           LEDbin[3] = 0;
         }
         else {
@@ -137,9 +128,9 @@ void loop() {
     }
     else {
       LEDbin[1] = 1;
-      if (LED < 0xE) {
+      if (layout < 0xE) {
         LEDbin[2] = 0;
-        if (LED == 0xC) {
+        if (layout == 0xC) {
           LEDbin[3] = 0;
         }
         else {
@@ -148,7 +139,7 @@ void loop() {
       }
       else {
         LEDbin[2] = 1;
-        if (LED == 0xE) {
+        if (layout == 0xE) {
           LEDbin[3] = 0;
         }
         else {
@@ -162,26 +153,26 @@ void loop() {
  //neo pixels button top: left = 0, top = 1, middle = 2, down = 3, right = 4;
  if (LEDbin[0] == 1) {
   //pixels.clear();
-  pixels.setPixelColor(4, pixels.Color(colour));
+  pixels.setPixelColor(4, pixels.Color(colour[0],colour[1],colour[2]));
  }
  else {
   //pixels.clear();
   pixels.setPixelColor(4, pixels.Color(OFF));
  }
  if (LEDbin[1] == 1) {
-  pixels.setPixelColor(2, pixels.Color(colour));
+  pixels.setPixelColor(2, pixels.Color(colour[0],colour[1],colour[2]));
  }
  else {
   pixels.setPixelColor(2, pixels.Color(OFF));
  }
  if (LEDbin[2] == 1) {
-  pixels.setPixelColor(0, pixels.Color(colour));
+  pixels.setPixelColor(0, pixels.Color(colour[0],colour[1],colour[2]));
  }
  else {
   pixels.setPixelColor(0, pixels.Color(OFF));
  }
  if (LEDbin[3] == 1) {
-  pixels.setPixelColor(1, pixels.Color(colour));
+  pixels.setPixelColor(1, pixels.Color(colour[0],colour[1],colour[2]));
   pixels.show();
  }
  else {
@@ -191,35 +182,37 @@ void loop() {
 
   //The Button press
   if (digitalRead(buttonPin) == HIGH && LastState == LOW) {
-    bleKeyboard.press(key); //continuously send a spacebar when button is pressed
+    bleKeyboard.press(); //continuously send a spacebar when button is pressed
     LastState = HIGH;       //set last state to high
     TimeSleep = millis();
   }
   if (digitalRead(buttonPin) == LOW && LastState == HIGH) {
-    bleKeyboard.release(key);  //stop sending the spacebar when the button is released
+    bleKeyboard.releaseAll();  //stop sending the spacebar when the button is released
     LastState = LOW;
   }
-  
+  //The configuration button response
   if(LastConfState == LOW && digitalRead(confPin) == HIGH) {       // button is pressed
     TimePressed = millis();
     LastConfState = HIGH;
     TimeSleep = millis();
     }
-
+  
   if(LastConfState == HIGH && digitalRead(confPin) == HIGH) {
-    while((millis() - TimePressed) > 3000 && (millis() - TimePressed) < 7000 && digitalRead(confPin) == HIGH) {
+    //Turn off pixel to indicate that if the button is released at that time the gamepad will go into deep sleep
+    while((millis() - TimePressed) > SleepPress && (millis() - TimePressed) < LongPress && digitalRead(confPin) == HIGH) {
       pixels.clear();
       pixels.show();
-      //LastConfState = HIGH;
+      LastConfState = HIGH;
     }
-    if((millis() - TimePressed) > 7000) {
-      pixels.fill(pixels.Color(colour),0,5);
+    //Have all the pixels blink to indicate the gamepad will reset to factory setting if the button is released
+    if((millis() - TimePressed) > LongPress) {
+      pixels.fill(pixels.Color(colour[0],colour[1],colour[2]),0,5);
       pixels.show();
       delay(500);
       pixels.clear();
       pixels.show();
       delay(500);
-      //LastConfState = HIGH;
+      LastConfState = HIGH;
     }
   }
   
@@ -228,8 +221,9 @@ void loop() {
     LastConfState = LOW;
   }
 
-  long pressDuration = TimeReleased - TimePressed;
-  
+  long pressDuration = TimeReleased - TimePressed;  //calculate the duration of the configuration button press
+ 
+  //if the button is pressed for less than 3 seconds the button will cycle through the factory keys
   if( pressDuration < ShortPress && pressDuration > 0) {
     n = n+1;
     pressDuration = 0;
@@ -241,13 +235,13 @@ void loop() {
     }  
   }
   
-  if( pressDuration > LongPress && pressDuration < SleepPress) {
+  if( pressDuration > SleepPress && pressDuration < LongPress) {
     pixels.clear();
     pixels.show();
     esp_deep_sleep_start();
   }
 
-  if (pressDuration > SleepPress) {
+  if (pressDuration > LongPress) {
     n = 0;
     pressDuration = 0;
     TimeReleased = 0;
