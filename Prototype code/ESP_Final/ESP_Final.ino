@@ -1,5 +1,3 @@
-
-
 /*
 @Title BUG ESP Final code including gatt protocol
 @Authors Floris van der Heijde, Jorn van der Linden
