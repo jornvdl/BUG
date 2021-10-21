@@ -30,6 +30,7 @@ int layout;     // integer representing layout of indicator leds
 int timeout;    // store integer value of timeout before sleep in seconds
 bool flag_fact; // flag to main program if systems needs to factory reset
 bool flag_bkey; // flag to main program to show key bind is set via BLE
+bool flgIsUpdated;	// flag to show something is updated to reset sleeptimer
 
 
 // When new key is received, update global variable and acknowledge.
@@ -39,7 +40,8 @@ class keyCallbacks: public BLECharacteristicCallbacks {
 
     if (*data>0 && *data<256) {
       keystroke = *data;
-      flag_bkey == true;
+      flag_bkey = true;
+   		flgIsUpdated = true;
       keyCharacteristic->setValue(keystroke);
     }
   }
@@ -48,15 +50,15 @@ class keyCallbacks: public BLECharacteristicCallbacks {
 class indicatorCallbacks: public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *indicatorCharacteristic) {
     uint8_t *data = indicatorCharacteristic->getData();
-    if (*data>0) {
-      colour[0] = *data;
-      colour[1] = *(data+1);
-      colour[2] = *(data+2);
-      layout = *(data+3);
+    colour[0] = *data;
+    colour[1] = *(data+1);
+    colour[2] = *(data+2);
+    layout = *(data+3);
 
-      int returnValue = (layout << 24) + (colour[2] << 16) + (colour[1] << 8) + colour[0];
-      indicatorCharacteristic->setValue(returnValue);
-    };
+    int returnValue = (layout << 24) + (colour[2] << 16) + (colour[1] << 8) + colour[0];
+    indicatorCharacteristic->setValue(returnValue);
+    
+    flgIsUpdated = true;
   }
 };
 // When new timeout is received, update global variable and acknowledge.
@@ -66,6 +68,7 @@ class timeoutCallbacks: public BLECharacteristicCallbacks {
     if (*(data+1)>0 || *data > 0) {
       timeout = *data * 256 + *(data+1);
       timeoutCharacteristic->setValue(timeout);
+      flgIsUpdated = true;
     }
   }
 };
@@ -78,7 +81,8 @@ class stateCallbacks: public BLECharacteristicCallbacks {
       // Return data, but outside this scope. TO DO! TODO!
     }
     else if (*data==2) {
-      flag_fact == true;
+      flag_fact = true;
+      flgIsUpdated = true;
     }
   }
 };
@@ -683,6 +687,7 @@ int* BleKeyboard::getLayout() {
 
 void BleKeyboard::setKey(int* k) {
 	keystroke = *k;
+
 }
 
 void BleKeyboard::setTimeout(int* t) {
@@ -697,4 +702,13 @@ void BleKeyboard::setColour(int* c) {
 
 void BleKeyboard::setLayout(int* l) {
 	layout = *l;
+}
+
+bool* BleKeyboard::isUpdated() {
+	return &flgIsUpdated;
+}
+
+void BleKeyboard::rstUpdate() {
+	flgIsUpdated = false;
+
 }

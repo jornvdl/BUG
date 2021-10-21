@@ -26,6 +26,8 @@ setKey		KEYWORD2
 setTimeout	KEYWORD2
 setColour	KEYWORD2
 setLayout	KEYWORD2
+isUpdated	KEYWORD2
+rstUpdate	KEYWORD2
 
 #######################################
 # Constants

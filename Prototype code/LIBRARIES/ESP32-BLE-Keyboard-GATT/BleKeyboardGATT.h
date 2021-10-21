@@ -147,6 +147,8 @@ public:
   void setTimeout(int* t);
   void setColour(int* c);
   void setLayout(int* l);
+  void rstUpdate();
+  bool* isUpdated();
 protected:
   virtual void onStarted(BLEServer *pServer) { };
   virtual void onConnect(BLEServer* pServer) override;
