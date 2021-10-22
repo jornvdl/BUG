@@ -50,8 +50,7 @@ int CurrentConfState;
 int LastConfState = LOW;
 unsigned long TimePressed = 0;
 unsigned long TimeReleased = 0;
-int factnum = 3;
 int n = 0;
 unsigned long TimeSleep = 0;
 bool factsettings = true;
-unsigned long recentPress = 0
+unsigned long recentPress = 0;

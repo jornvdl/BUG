@@ -14,7 +14,7 @@ Conf button pin 5 pulldown
 #include <Adafruit_NeoPixel.h>
 
 //Set name of bluetooth keyboard
-BleKeyboard bleKeyboard("Gamer-BUG");
+BleKeyboard bleKeyboard("BUG");
 
 //Initialise the neopixels as pixels
 Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIN, NEO_GRB + NEO_KHZ800);
@@ -199,7 +199,7 @@ void loop() {
   }
 
   if (factsettings) {
-    n = factnum;
+    n = 0;
     bleKeyboard.setKey(&KeyFact[n][0]);
     bleKeyboard.setColour(&KeyFact[n][1]);
     bleKeyboard.setLayout(&KeyFact[n][4]);
