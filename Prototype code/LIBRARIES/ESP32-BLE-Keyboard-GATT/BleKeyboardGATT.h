@@ -151,6 +151,8 @@ public:
   void rstFactory();
   bool* isUpdated();
   bool* setFactory();
+  void rstKeyFlag();
+  bool* keySetBLE();
 protected:
   virtual void onStarted(BLEServer *pServer) { };
   virtual void onConnect(BLEServer* pServer) override;

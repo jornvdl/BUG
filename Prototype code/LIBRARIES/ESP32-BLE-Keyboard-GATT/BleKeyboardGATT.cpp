@@ -719,3 +719,11 @@ void BleKeyboard::rstFactory() {
 bool* BleKeyboard::setFactory() {
 	return &flag_fact;
 }
+
+void BleKeyboard::rstKeyFlag() {
+	flag_bkey = false;
+}
+
+bool* BleKeyboard::keySetBLE() {
+	return &flag_bkey;
+}
