@@ -28,6 +28,8 @@ setColour	KEYWORD2
 setLayout	KEYWORD2
 isUpdated	KEYWORD2
 rstUpdate	KEYWORD2
+setFactory	KEYWORD2
+rstFactory	KEYWORD2
 
 #######################################
 # Constants
