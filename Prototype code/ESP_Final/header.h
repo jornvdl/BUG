@@ -26,7 +26,11 @@ char a = 97;
 char s = 115;
 char d = 100;
 
-char KeyCycle[] = {w, a, s, d};
+char KeyFact[5][3] = {{w, BLUE, 0x01}
+                      {a, BLUE, 0x02},
+                      {s, BLUE, 0x04},        
+                      {d, BLUE, 0x08},         
+                      {space, BLUE, 0x0E}};
 int LEDbin[] = {0,0,0,0};
 
 //select the desired key and colour

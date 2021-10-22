@@ -40,6 +40,8 @@ void setup() {
   bleKeyboard.setColour(&colour[0]);
   bleKeyboard.setLayout(&layout);
   bleKeyboard.rstUpdate();
+  bleKeyboard.rstFactory();
+  bleKeyboard.rstKeyFlag();
   TimeSleep = millis();
 
 }
@@ -50,8 +52,10 @@ void loop() {
   if (*bleKeyboard.isUpdated() && *bleKeyboard.setFactory() == false) {
     TimeSleep = millis();
     bleKeyboard.rstUpdate();
+    factsettings == false;
   }
 
+  if (*bleKeyboard.keySetBLE()
   
   if ((millis()/1000 - TimeSleep/1000) > *bleKeyboard.getTimeout()) {
      pixels.clear();
@@ -191,9 +195,13 @@ void loop() {
     factsettings = true;
     bleKeyboard.rstFactory();
     bleKeyboard.rstUpdate();
-    
   }
 
+  if (factsettings) {
+    bleKeyboard.setKey(KeyFact[n][0]);
+    bleKeyboard.setColour(KeyFact[n][1]);
+    bleKeyboard.setLayout(KeyFact[n][2]);
+  }
 
 
 
@@ -230,6 +238,7 @@ void loop() {
       pixels.show();
       delay(500);
       LastConfState = HIGH;
+      factsettings = true;
     }
   }
   
@@ -241,12 +250,12 @@ void loop() {
   long pressDuration = TimeReleased - TimePressed;  //calculate the duration of the configuration button press
  
   //if the button is pressed for less than 3 seconds the button will cycle through the factory keys
-  if( pressDuration < ShortPress && pressDuration > 0) {
+  if( pressDuration < ShortPress && pressDuration > 0 && factsettings) {
     n = n+1;
     pressDuration = 0;
     TimeReleased = 0;
     TimePressed = 0;
-    if(n > 3) {
+    if(n > 4) {
       n = 0;
      
     }  
