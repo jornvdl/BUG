@@ -710,5 +710,12 @@ bool* BleKeyboard::isUpdated() {
 
 void BleKeyboard::rstUpdate() {
 	flgIsUpdated = false;
+}
 
+void BleKeyboard::rstFactory() {
+	flag_fact = false;
+}
+
+bool* BleKeyboard::setFactory() {
+	return &flag_fact;
 }
