@@ -26,11 +26,11 @@ char a = 97;
 char s = 115;
 char d = 100;
 
-char KeyFact[5][3] = {{w, BLUE, 0x01}
-                      {a, BLUE, 0x02},
-                      {s, BLUE, 0x04},        
-                      {d, BLUE, 0x08},         
-                      {space, BLUE, 0x0E}};
+int KeyFact[5][5] = {{w, 0x08, 0x20, 0x22, 0x01},
+                      {a, 0x08, 0x20, 0x22, 0x02},
+                      {s, 0x08, 0x20, 0x22, 0x04},        
+                      {d, 0x08, 0x20, 0x22, 0x08},         
+                      {space, 0x08, 0x20, 0x22, 0x0E}};
 int LEDbin[] = {0,0,0,0};
 
 //select the desired key and colour
@@ -50,6 +50,8 @@ int CurrentConfState;
 int LastConfState = LOW;
 unsigned long TimePressed = 0;
 unsigned long TimeReleased = 0;
+int factnum = 3;
 int n = 0;
 unsigned long TimeSleep = 0;
-bool factsettings = false;
+bool factsettings = true;
+unsigned long recentPress = 0

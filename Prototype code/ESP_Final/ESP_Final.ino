@@ -33,7 +33,6 @@ void setup() {
   int layout = 0x0F;  // 16, all on
   int keybind = 0x20; //space
   int timeout = 300;
-
   
   bleKeyboard.setTimeout(&timeout);
   bleKeyboard.setKey(&keybind);
@@ -49,13 +48,15 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 
-  if (*bleKeyboard.isUpdated() && *bleKeyboard.setFactory() == false) {
+  if (*bleKeyboard.isUpdated()) {
     TimeSleep = millis();
     bleKeyboard.rstUpdate();
-    factsettings == false;
   }
 
-  if (*bleKeyboard.keySetBLE()
+  if (*bleKeyboard.keySetBLE()) {
+   factsettings = false;
+   bleKeyboard.rstKeyFlag();
+  }
   
   if ((millis()/1000 - TimeSleep/1000) > *bleKeyboard.getTimeout()) {
      pixels.clear();
@@ -191,16 +192,17 @@ void loop() {
  }
 
   //Check if the device has been set to factory settings
-  if (*bleKeyboard.setfactory()){
+  if (*bleKeyboard.setFactory()){
     factsettings = true;
     bleKeyboard.rstFactory();
     bleKeyboard.rstUpdate();
   }
 
   if (factsettings) {
-    bleKeyboard.setKey(KeyFact[n][0]);
-    bleKeyboard.setColour(KeyFact[n][1]);
-    bleKeyboard.setLayout(KeyFact[n][2]);
+    n = factnum;
+    bleKeyboard.setKey(&KeyFact[n][0]);
+    bleKeyboard.setColour(&KeyFact[n][1]);
+    bleKeyboard.setLayout(&KeyFact[n][4]);
   }
 
 
@@ -250,15 +252,19 @@ void loop() {
   long pressDuration = TimeReleased - TimePressed;  //calculate the duration of the configuration button press
  
   //if the button is pressed for less than 3 seconds the button will cycle through the factory keys
-  if( pressDuration < ShortPress && pressDuration > 0 && factsettings) {
+  if( pressDuration < ShortPress && pressDuration > 0 && factsettings && (millis() - recentPress) > 500) {
     n = n+1;
     pressDuration = 0;
     TimeReleased = 0;
     TimePressed = 0;
+    recentPress = millis();
     if(n > 4) {
       n = 0;
-     
     }  
+  }
+
+  if (millis() - recentPress > 500) {
+    recentPress = 0;
   }
   
   if( pressDuration > SleepPress && pressDuration < LongPress) {
