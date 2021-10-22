@@ -1,5 +1,3 @@
-
-
 /*
 @Title BUG ESP Final code including gatt protocol
 @Authors Floris van der Heijde, Jorn van der Linden
@@ -41,17 +39,17 @@ void setup() {
   bleKeyboard.setKey(&keybind);
   bleKeyboard.setColour(&colour[0]);
   bleKeyboard.setLayout(&layout);
-  //bleKeyboard.rstUpdate();
+  bleKeyboard.rstUpdate();
   TimeSleep = millis();
-  timeupdate = *bleKeyboard.getTimeout();
+
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
 
-  if (timeupdate != *bleKeyboard.getTimeout()) {
+  if (*bleKeyboard.isUpdated()) {
     TimeSleep = millis();
-    timeupdate = *bleKeyboard.getTimeout();
+    bleKeyboard.rstUpdate();
   }
 
   
