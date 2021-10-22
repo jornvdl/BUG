@@ -49,6 +49,7 @@ void loop() {
   // put your main code here, to run repeatedly:
 
   if (*bleKeyboard.isUpdated()) {
+    factsettings = false;
     TimeSleep = millis();
     bleKeyboard.rstUpdate();
   }
@@ -193,13 +194,13 @@ void loop() {
 
   //Check if the device has been set to factory settings
   if (*bleKeyboard.setFactory()){
+    n = 0;
     factsettings = true;
     bleKeyboard.rstFactory();
     bleKeyboard.rstUpdate();
   }
 
   if (factsettings) {
-    n = 0;
     bleKeyboard.setKey(&KeyFact[n][0]);
     bleKeyboard.setColour(&KeyFact[n][1]);
     bleKeyboard.setLayout(&KeyFact[n][4]);
