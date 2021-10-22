@@ -47,7 +47,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 
-  if (*bleKeyboard.isUpdated()) {
+  if (*bleKeyboard.isUpdated() && *bleKeyboard.setFactory() == false) {
     TimeSleep = millis();
     bleKeyboard.rstUpdate();
   }
@@ -185,6 +185,17 @@ void loop() {
   pixels.setPixelColor(1, pixels.Color(OFF));
   pixels.show();
  }
+
+  //Check if the device has been set to factory settings
+  if (*bleKeyboard.setfactory()){
+    factsettings = true;
+    bleKeyboard.rstFactory();
+    bleKeyboard.rstUpdate();
+    
+  }
+
+
+
 
   //The Button press
   if (digitalRead(buttonPin) == HIGH && LastState == LOW) {
