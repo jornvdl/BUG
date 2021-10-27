@@ -198,11 +198,12 @@ void loop() {
     factsettings = true;
     bleKeyboard.rstFactory();
     bleKeyboard.rstUpdate();
+    bleKeyboard.setColour(&KeyFact[n][1]);
   }
 
   if (factsettings) {
     bleKeyboard.setKey(&KeyFact[n][0]);
-    bleKeyboard.setColour(&KeyFact[n][1]);
+
     bleKeyboard.setLayout(&KeyFact[n][4]);
   }
 
@@ -279,6 +280,7 @@ void loop() {
     pressDuration = 0;
     TimeReleased = 0;
     TimePressed = 0;
+    bleKeyboard.setColour(&KeyFact[n][1]);
   }
 
 
