@@ -62,6 +62,7 @@ void loop() {
   if ((millis()/1000 - TimeSleep/1000) > *bleKeyboard.getTimeout()) {
      pixels.clear();
      pixels.show();
+     bleKeyboard.end();
      esp_deep_sleep_start();
   }
 
@@ -272,6 +273,7 @@ void loop() {
   if( pressDuration > SleepPress && pressDuration < LongPress) {
     pixels.clear();
     pixels.show();
+    bleKeyboard.end();
     esp_deep_sleep_start();
   }
 
