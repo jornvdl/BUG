@@ -57,3 +57,5 @@ int n = 0;
 unsigned long TimeSleep = 0;
 bool factsettings = true;
 unsigned long recentPress = 0;
+unsigned long blinktimeon = 0;
+unsigned long blinktimeoff = 0;
