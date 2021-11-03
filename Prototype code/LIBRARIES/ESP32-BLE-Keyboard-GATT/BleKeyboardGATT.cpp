@@ -78,7 +78,10 @@ class stateCallbacks: public BLECharacteristicCallbacks {
     uint8_t *data = stateCharacteristic->getData();
 
     if (*data==1) {
-      // Return data, but outside this scope. TO DO! TODO!
+	    // int returnValue = (layout << 24) + (colour[2] << 16) + (colour[1] << 8) + colour[0];
+	    // indicatorCharacteristic->setValue(returnValue);
+     //  keyCharacteristic->setValue(keystroke);
+     //  timeoutCharacteristic->setValue(timeout);
     }
     else if (*data==2) {
       flag_fact = true;
@@ -182,22 +185,22 @@ void BleKeyboard::begin(void)
   BLEService *pService = pServer->createService(ServiceUUID); // Create a new service for the GATT service
 
 	// Creating multiple characteristics on the GATT service.
-  BLECharacteristic *keyCharacteristic = pService->createCharacteristic(
+  keyCharacteristic = pService->createCharacteristic(
 	  KeyUUID,
 	  BLECharacteristic::PROPERTY_WRITE |
 	  BLECharacteristic::PROPERTY_READ
   );
-  BLECharacteristic *indicatorCharacteristic = pService->createCharacteristic(
+  indicatorCharacteristic = pService->createCharacteristic(
 	  IndicUUID,
 	  BLECharacteristic::PROPERTY_WRITE |
 	  BLECharacteristic::PROPERTY_READ
   );
-  BLECharacteristic *timeoutCharacteristic = pService->createCharacteristic(
+  timeoutCharacteristic = pService->createCharacteristic(
 	  TimeoutUUID,
 	  BLECharacteristic::PROPERTY_WRITE |
 	  BLECharacteristic::PROPERTY_READ
   );
-  BLECharacteristic *stateCharacteristic = pService->createCharacteristic(
+  stateCharacteristic = pService->createCharacteristic(
 	  StateUUID,
 	  BLECharacteristic::PROPERTY_WRITE
   );
@@ -258,6 +261,7 @@ void BleKeyboard::begin(void)
 
 void BleKeyboard::end(void)
 {
+	BLEDevice::deinit(false);
 }
 
 bool BleKeyboard::isConnected(void) {
@@ -687,21 +691,26 @@ int* BleKeyboard::getLayout() {
 
 void BleKeyboard::setKey(int* k) {
 	keystroke = *k;
-
+	keyCharacteristic->setValue(keystroke);
 }
 
 void BleKeyboard::setTimeout(int* t) {
 	timeout = *t;
+  timeoutCharacteristic->setValue(timeout);
 }
 
 void BleKeyboard::setColour(int* c) {
 	for (int i = 0; i < 3; i++) {
 		colour[i] = *(c+i);
 	}
+  int returnValue = (layout << 24) + (colour[2] << 16) + (colour[1] << 8) + colour[0];
+  indicatorCharacteristic->setValue(returnValue);
 }
 
 void BleKeyboard::setLayout(int* l) {
 	layout = *l;
+  int returnValue = (layout << 24) + (colour[2] << 16) + (colour[1] << 8) + colour[0];
+  indicatorCharacteristic->setValue(returnValue);
 }
 
 bool* BleKeyboard::isUpdated() {

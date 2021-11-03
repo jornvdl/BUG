@@ -110,6 +110,10 @@ private:
   BLECharacteristic* inputKeyboard;
   BLECharacteristic* outputKeyboard;
   BLECharacteristic* inputMediaKeys;
+  BLECharacteristic* keyCharacteristic;
+  BLECharacteristic* indicatorCharacteristic;
+  BLECharacteristic* timeoutCharacteristic;
+  BLECharacteristic* stateCharacteristic;
   BLEAdvertising*    advertising;
   KeyReport          _keyReport;
   MediaKeyReport     _mediaKeyReport;
@@ -153,6 +157,7 @@ public:
   bool* setFactory();
   void rstKeyFlag();
   bool* keySetBLE();
+  void reportBLE();
 protected:
   virtual void onStarted(BLEServer *pServer) { };
   virtual void onConnect(BLEServer* pServer) override;

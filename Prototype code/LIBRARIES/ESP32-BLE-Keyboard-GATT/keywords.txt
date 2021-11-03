@@ -30,8 +30,6 @@ isUpdated	KEYWORD2
 rstUpdate	KEYWORD2
 rstKeyFlag	KEYWORD2
 keySetBLE	KEYWORD2
-rstFactory	KEYWORD2
-setFactory	KEYWORD2
 
 #######################################
 # Constants
