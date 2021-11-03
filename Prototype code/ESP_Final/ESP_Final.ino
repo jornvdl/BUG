@@ -10,11 +10,14 @@ Conf button pin 5 pulldown
 
 */
 #include "header.h"
+#include <Preferences.h>
 #include <BleKeyboardGATT.h>
 #include <Adafruit_NeoPixel.h>
 
 //Set name of bluetooth keyboard
-BleKeyboard bleKeyboard("BUG");
+BleKeyboard bleKeyboard("GAMER-BUG", "FvdH JvdL KvR");
+
+Preferences preferences;
 
 //Initialise the neopixels as pixels
 Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIN, NEO_GRB + NEO_KHZ800);
@@ -22,17 +25,25 @@ Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
   // put your setup code here, to run once:
- // Serial.begin(115200);
+  // Serial.begin(115200);
   bleKeyboard.begin();
   pixels.begin();
+
+  // Get preferences from EEPROM flash memory. Store data using preferences.begin("bug_data", false) and preferences.putInt("..", value)
+  preferences.begin("bug_data", true);
+  int keybind = preferences.getInt("key", 0x20);
+  int colour[3] = {preferences.getInt("cRed", 0x0F), preferences.getInt("cGreen", 0x0E), preferences.getInt("cBlue", 0x0D)};
+  int layout = preferences.getInt("layout", 0x0E);
+  int timeout = preferences.getInt("timeout", 300);
+  preferences.end();
   
   pinMode(buttonPin, INPUT_PULLDOWN);
   pinMode(confPin, INPUT_PULLDOWN);
   
-  int colour[3] = {0x0F, 0x0E, 0x0D}; //random vars
-  int layout = 0x0F;  // 16, all on
-  int keybind = 0x20; //space
-  int timeout = 300;
+//  int colour[3] = {0x0F, 0x0E, 0x0D}; //random vars
+//  int layout = 0x0F;  // 16, all on
+//  int keybind = 0x20; //space
+//  int timeout = 300;
   
   bleKeyboard.setTimeout(&timeout);
   bleKeyboard.setKey(&keybind);
