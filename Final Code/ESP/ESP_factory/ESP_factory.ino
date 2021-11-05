@@ -8,14 +8,14 @@
 #include "header.h"
 #include <BleKeyboardGATT.h>
 #include <Adafruit_NeoPixel.h>
-#include "functions.h"
+
 //Set the BUG name
 BleKeyboard bleKeyboard("BUGsy");;
 
 //Initialise the Neopixels as "pixels"
 Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIN, NEO_GRB + NEO_KHZ800);
 #define DELAYVAL 500 //Time in milliseconds to pause between pixels
-
+#include "functions.h"
 void setup() {
   // Setup code, runs once
   Serial.begin(115200);
@@ -41,6 +41,7 @@ void setup() {
   TimeSleep = millis();
   blinktimeoff = millis();
   blinktimeon = millis();
+  startup = true;
 
 }
 
@@ -59,8 +60,7 @@ void loop() {
 
   //Check if the last activity was more than 5 min ago 
   if ((millis()/1000 - TimeSleep/1000) > *bleKeyboard.getTimeout()) {
-     pixels.clear();            //clear the neopixels 
-     pixels.show();             //update the neopixels
+     LEDsoff();
      digitalWrite(readyPin,LOW);
      esp_deep_sleep_start();    //set the BUG to deep sleep
   }
@@ -99,7 +99,6 @@ void loop() {
     bleKeyboard.press();    //continuously send a spacebar when button is pressed
     LastState = HIGH;       //set last state to high
     TimeSleep = millis();   //reset the sleep timer
-    Serial.print("pressed");
   }
   if (digitalRead(buttonPin) == LOW && LastState == HIGH) {
     bleKeyboard.releaseAll();  //stop sending the spacebar when the button is released
@@ -117,18 +116,12 @@ void loop() {
   if(LastConfState == HIGH && digitalRead(confPin) == HIGH) {
     //Turn off pixel to indicate that if the button is released at that time the BUG will go into deep sleep
     while((millis() - TimePressed) > SleepPress && (millis() - TimePressed) < LongPress && digitalRead(confPin) == HIGH) {
-      pixels.clear();
-      pixels.show();
+      LEDsoff();
       LastConfState = HIGH;
     }
     //Have all the pixels blink to indicate the gamepad will reset to factory setting if the button is released
     if((millis() - TimePressed) > LongPress) {
-      pixels.fill(pixels.Color(colour[0],colour[1],colour[2]),0,5);
-      pixels.show();
-      delay(500);
-      pixels.clear();
-      pixels.show();
-      delay(500);
+      LEDsBlink(colour[0],colour[1],colour[2]);
       LastConfState = HIGH;
       factsettings = true;
     }
@@ -160,8 +153,7 @@ void loop() {
   }
   //check if the conf press duration was in the sleep time window 
   if( pressDuration > SleepPress && pressDuration < LongPress) {
-    pixels.clear();             //reset the neopixels
-    pixels.show();              //update the neopixels
+    LEDsoff();
     bleKeyboard.end();
     digitalWrite(readyPin, LOW);
     esp_deep_sleep_start();     //start deepsleep
@@ -173,88 +165,42 @@ void loop() {
     TimeReleased = 0;
     TimePressed = 0;
     bleKeyboard.setColour(&KeyFact[n][1]);    //set the colour to factory settings
-    //bleKeyboard.end();
-    //bleKeyboard.begin();
+    confUpdate = true;
   }
 
-  if (bleKeyboard.isConnected() && (*bleKeyboard.isUpdated()||confUpdate) ) {
-      confUpdate = false;
+  if (factsettings) {
+    bleKeyboard.setKey(&KeyFact[n][0]);     //set the key to factory settings
+    bleKeyboard.setLayout(&KeyFact[n][4]);  //set the LED layout to factory settings
+  }
 
+
+  layout = *bleKeyboard.getLayout();
+  //convert hexadecimal layout to binary
+  LEDbin[0] = *layout_hextobin(layout);
+  LEDbin[1] = *(layout_hextobin(layout)+1);
+  LEDbin[2] = *(layout_hextobin(layout)+2);
+  LEDbin[3] = *(layout_hextobin(layout)+3);
+
+  if (bleKeyboard.isConnected() && (*bleKeyboard.isUpdated()||confUpdate||startup) ) {
+      confUpdate = false;
+      startup = false;
     if (*bleKeyboard.isUpdated()) {
       TimeSleep = millis();       //reset sleep timing
       bleKeyboard.rstUpdate();    //reset the update flag
     }
       //Set neopixels according to LEDbin top = LEDbin[3], left = LEDbin[2], down = LEDbin[1], right = LEDbin[0]
       //neo pixels: top = 0, left = 1, down = 2, right = 3;
-      if (LEDbin[0] == 1) {
-      //pixels.clear();
-      pixels.setPixelColor(3, pixels.Color(colour[0],colour[1],colour[2]));
-      }
-      else {
-      //pixels.clear();
-      pixels.setPixelColor(3, pixels.Color(OFF));
-      }
-      if (LEDbin[1] == 1) {
-      pixels.setPixelColor(2, pixels.Color(colour[0],colour[1],colour[2]));
-      }
-      else {
-      pixels.setPixelColor(2, pixels.Color(OFF));
-      }
-      if (LEDbin[2] == 1) {
-      pixels.setPixelColor(1, pixels.Color(colour[0],colour[1],colour[2]));
-      }
-      else {
-      pixels.setPixelColor(1, pixels.Color(OFF));
-      }
-      if (LEDbin[3] == 1) {
-      pixels.setPixelColor(0, pixels.Color(colour[0],colour[1],colour[2]));
-      pixels.show();
-      }
-      else {
-      pixels.setPixelColor(0, pixels.Color(OFF));
-      pixels.show();
-      }
+      LEDupdate(LEDbin,colour[0],colour[1],colour[2]);
+
   }
   else if (not(bleKeyboard.isConnected())) {
     if (millis() - blinktimeoff > 300 && millis() - blinktimeon > 600) {
-       LEDupdate(LEDbin,colour[0],colour[1],colour[2]);
-       /*
-       if (LEDbin[0] == 1) {
-        //pixels.clear();
-        pixels.setPixelColor(3, pixels.Color(0,0,200));
-       }
-       else {
-        //pixels.clear();
-        pixels.setPixelColor(3, pixels.Color(OFF));
-       }
-       if (LEDbin[1] == 1) {
-        pixels.setPixelColor(2, pixels.Color(0,0,200));
-       }
-       else {
-        pixels.setPixelColor(2, pixels.Color(OFF));
-       }
-       if (LEDbin[2] == 1) {
-        pixels.setPixelColor(1, pixels.Color(0,0,200));
-       }
-       else {
-        pixels.setPixelColor(1, pixels.Color(OFF));
-       }
-       if (LEDbin[3] == 1) {
-        pixels.setPixelColor(0, pixels.Color(0,0,200));
-        pixels.show();
-        blinktimeon = millis();
-       }
-       else {
-        pixels.setPixelColor(0, pixels.Color(OFF));
-        pixels.show();
-        blinktimeon = millis();
-       }
-       */
+       LEDupdate(LEDbin,0,0,255);
+       blinktimeon = millis();
        
     }
     else if (millis() - blinktimeon > 300 && millis() - blinktimeoff > 600) {
-       pixels.clear();
-       pixels.show();
+       LEDsoff();
        blinktimeoff = millis();
     }
     

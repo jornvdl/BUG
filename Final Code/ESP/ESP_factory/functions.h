@@ -98,7 +98,7 @@ int * layout_hextobin(int layouttemp){
   return LEDtemp;
 }
 
-void LEDupdate(*LEDbin,colour0,colour1,colour2) {
+void LEDupdate(int *LEDbin,int colour0,int colour1,int colour2) {
       //Set neopixels according to LEDbin top = LEDbin[3], left = LEDbin[2], down = LEDbin[1], right = LEDbin[0]
       //neo pixels: top = 0, left = 1, down = 2, right = 3;
       if (*LEDbin == 1) {
@@ -127,4 +127,18 @@ void LEDupdate(*LEDbin,colour0,colour1,colour2) {
       pixels.setPixelColor(0, pixels.Color(0,0,0));
       pixels.show();
       }
+}
+
+void LEDsoff() {
+  pixels.clear();
+  pixels.show();
+}
+
+void LEDsBlink(int colour0, int colour1, int colour2) {
+      pixels.fill(pixels.Color(colour0,colour1,colour2),0,NUMPIXELS);
+      pixels.show();
+      delay(500);
+      pixels.clear();
+      pixels.show();
+      delay(500);
 }
