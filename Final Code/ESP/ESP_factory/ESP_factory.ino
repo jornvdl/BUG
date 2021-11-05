@@ -216,7 +216,7 @@ void loop() {
       pixels.show();
       }
   }
-  else {
+  else if (not(bleKeyboard.isConnected())) {
     if (millis() - blinktimeoff > 300 && millis() - blinktimeon > 600) {
        if (LEDbin[0] == 1) {
         //pixels.clear();
