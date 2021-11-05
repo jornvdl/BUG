@@ -50,10 +50,6 @@ void loop() {
   //
   digitalWrite(readyPin,HIGH);
   //check if the BUG has received an update from the computer
-  if (*bleKeyboard.isUpdated()) {
-    TimeSleep = millis();       //reset sleep timing
-    bleKeyboard.rstUpdate();    //reset the update flag
-  }
   
   //check if the BUG has received a new keybinding
   if (*bleKeyboard.keySetBLE()) {
@@ -152,6 +148,7 @@ void loop() {
     pressDuration = 0;
     TimeReleased = 0;
     TimePressed = 0;
+    confUpdate = true;
     recentPress = millis();     //store the press time for debouncing
     if(n > 4) {
       n = 0;
@@ -181,7 +178,13 @@ void loop() {
     //bleKeyboard.begin();
   }
 
-  if (bleKeyboard.isConnected()) {
+  if (bleKeyboard.isConnected() && (*bleKeyboard.isUpdated()||confUpdate) ) {
+      confUpdate = false;
+
+    if (*bleKeyboard.isUpdated()) {
+      TimeSleep = millis();       //reset sleep timing
+      bleKeyboard.rstUpdate();    //reset the update flag
+    }
       //Set neopixels according to LEDbin top = LEDbin[3], left = LEDbin[2], down = LEDbin[1], right = LEDbin[0]
       //neo pixels: top = 0, left = 1, down = 2, right = 3;
       if (LEDbin[0] == 1) {

@@ -28,11 +28,11 @@ char s = 115;
 char d = 100;
 
 //factory setting keypress, colour and layout
-int KeyFact[5][5] = {{arrowup, 0xA0, 0xF0, 0xFF, 0x01},
-                      {arrowleft, 0xA0, 0xF0, 0xFF, 0x02},
-                      {arrowdown, 0xA0, 0xF0, 0xFF, 0x04},        
-                      {arrowright, 0xA0, 0xF0, 0xFF, 0x08},         
-                      {space, 0xA0, 0xF0, 0xFF, 0x0E}};
+int KeyFact[5][5] = {{arrowup, 0x22, 0xA0, 0xFF, 0x01},
+                      {arrowleft, 0x22, 0xA0, 0xFF, 0x02},
+                      {arrowdown, 0x22, 0xA0, 0xFF, 0x04},        
+                      {arrowright, 0x22, 0xA0, 0xFF, 0x08},         
+                      {space, 0x22, 0xA0, 0xFF, 0x0E}};
 //initialise LED binary array
 int LEDbin[] = {0,0,0,0};
 
@@ -50,6 +50,7 @@ unsigned long TimeReleased = 0;
 int n = 0;
 unsigned long TimeSleep = 0;
 bool factsettings = true;
+bool confUpdate = false;
 unsigned long recentPress = 0;
 unsigned long blinktimeon = 0;
 unsigned long blinktimeoff = 0;
