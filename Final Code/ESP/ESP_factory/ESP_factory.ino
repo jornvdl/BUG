@@ -6,10 +6,9 @@
  */
 
 #include "header.h"
-#include "functions.h"
 #include <BleKeyboardGATT.h>
 #include <Adafruit_NeoPixel.h>
-
+#include "functions.h"
 //Set the BUG name
 BleKeyboard bleKeyboard("BUGsy");;
 
@@ -218,6 +217,8 @@ void loop() {
   }
   else if (not(bleKeyboard.isConnected())) {
     if (millis() - blinktimeoff > 300 && millis() - blinktimeon > 600) {
+       LEDupdate(LEDbin,colour[0],colour[1],colour[2]);
+       /*
        if (LEDbin[0] == 1) {
         //pixels.clear();
         pixels.setPixelColor(3, pixels.Color(0,0,200));
@@ -248,6 +249,8 @@ void loop() {
         pixels.show();
         blinktimeon = millis();
        }
+       */
+       
     }
     else if (millis() - blinktimeon > 300 && millis() - blinktimeoff > 600) {
        pixels.clear();
