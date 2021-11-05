@@ -11,7 +11,7 @@
 #include <Adafruit_NeoPixel.h>
 
 //Set the BUG name
-BleKeyboard bleKeyboard("BUG");;
+BleKeyboard bleKeyboard("BUGsy");;
 
 //Initialise the Neopixels as "pixels"
 Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIN, NEO_GRB + NEO_KHZ800);
@@ -19,14 +19,15 @@ Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
   // Setup code, runs once
+  Serial.begin(115200);
   bleKeyboard.begin();
   pixels.begin();
   
-  pinMode(buttonPin, INPUT_PULLDOWN); //set the buttonpin as pulldown
-  pinMode(confPin, INPUT_PULLDOWN);   //set the confpin as pulldown
-
+  pinMode(buttonPin, INPUT); //set the buttonpin as pulldown
+  pinMode(confPin, INPUT);   //set the confpin as pulldown
+  pinMode(readyPin, OUTPUT);                 //set the ready pin as output
   //Initialise the LED colour, Layout, and the keybinding.
-  int colour[3] = {0x0F, 0x0E, 0x0D}; //random vars
+  int colour[3] = {0xFF, 0xFE, 0xFD}; //random vars
   int layout = 0x0F;  // 16, all on
   int keybind = 0x20; //space
   int timeout = 300;
@@ -39,12 +40,15 @@ void setup() {
   bleKeyboard.rstFactory();
   bleKeyboard.rstKeyFlag();
   TimeSleep = millis();
+  blinktimeoff = millis();
+  blinktimeon = millis();
 
 }
 
 void loop() {
   //Main code runs repeatedly
-  
+  //
+  digitalWrite(readyPin,HIGH);
   //check if the BUG has received an update from the computer
   if (*bleKeyboard.isUpdated()) {
     TimeSleep = millis();       //reset sleep timing
@@ -62,6 +66,7 @@ void loop() {
   if ((millis()/1000 - TimeSleep/1000) > *bleKeyboard.getTimeout()) {
      pixels.clear();            //clear the neopixels 
      pixels.show();             //update the neopixels
+     digitalWrite(readyPin,LOW);
      esp_deep_sleep_start();    //set the BUG to deep sleep
   }
 
@@ -74,36 +79,7 @@ void loop() {
   LEDbin[2] = *(layout_hextobin(layout)+2);
   LEDbin[3] = *(layout_hextobin(layout)+3);
 
-  //Set neopixels according to LEDbin top = LEDbin[3], left = LEDbin[2], down = LEDbin[1], right = LEDbin[0]
-  //neo pixels button top: left = 0, top = 1, middle = 2, down = 3, right = 4;
-  if (LEDbin[0] == 1) {
-  //pixels.clear();
-  pixels.setPixelColor(4, pixels.Color(colour[0],colour[1],colour[2]));
-  }
-  else {
-  //pixels.clear();
-  pixels.setPixelColor(4, pixels.Color(OFF));
-  }
-  if (LEDbin[1] == 1) {
-  pixels.setPixelColor(2, pixels.Color(colour[0],colour[1],colour[2]));
-  }
-  else {
-  pixels.setPixelColor(2, pixels.Color(OFF));
-  }
-  if (LEDbin[2] == 1) {
-  pixels.setPixelColor(0, pixels.Color(colour[0],colour[1],colour[2]));
-  }
-  else {
-  pixels.setPixelColor(0, pixels.Color(OFF));
-  }
-  if (LEDbin[3] == 1) {
-  pixels.setPixelColor(1, pixels.Color(colour[0],colour[1],colour[2]));
-  pixels.show();
-  }
-  else {
-  pixels.setPixelColor(1, pixels.Color(OFF));
-  pixels.show();
-  }
+  
 
   //Check if the device has been set to factory settings via the PC
   if (*bleKeyboard.setFactory()){
@@ -128,6 +104,7 @@ void loop() {
     bleKeyboard.press();    //continuously send a spacebar when button is pressed
     LastState = HIGH;       //set last state to high
     TimeSleep = millis();   //reset the sleep timer
+    Serial.print("pressed");
   }
   if (digitalRead(buttonPin) == LOW && LastState == HIGH) {
     bleKeyboard.releaseAll();  //stop sending the spacebar when the button is released
@@ -190,6 +167,7 @@ void loop() {
     pixels.clear();             //reset the neopixels
     pixels.show();              //update the neopixels
     bleKeyboard.end();
+    digitalWrite(readyPin, LOW);
     esp_deep_sleep_start();     //start deepsleep
   }
   //check if the button was prssed long enough for factory settings mode
@@ -202,6 +180,83 @@ void loop() {
     //bleKeyboard.end();
     //bleKeyboard.begin();
   }
+
+  if (bleKeyboard.isConnected()) {
+      //Set neopixels according to LEDbin top = LEDbin[3], left = LEDbin[2], down = LEDbin[1], right = LEDbin[0]
+      //neo pixels: top = 0, left = 1, down = 2, right = 3;
+      if (LEDbin[0] == 1) {
+      //pixels.clear();
+      pixels.setPixelColor(3, pixels.Color(colour[0],colour[1],colour[2]));
+      }
+      else {
+      //pixels.clear();
+      pixels.setPixelColor(3, pixels.Color(OFF));
+      }
+      if (LEDbin[1] == 1) {
+      pixels.setPixelColor(2, pixels.Color(colour[0],colour[1],colour[2]));
+      }
+      else {
+      pixels.setPixelColor(2, pixels.Color(OFF));
+      }
+      if (LEDbin[2] == 1) {
+      pixels.setPixelColor(1, pixels.Color(colour[0],colour[1],colour[2]));
+      }
+      else {
+      pixels.setPixelColor(1, pixels.Color(OFF));
+      }
+      if (LEDbin[3] == 1) {
+      pixels.setPixelColor(0, pixels.Color(colour[0],colour[1],colour[2]));
+      pixels.show();
+      }
+      else {
+      pixels.setPixelColor(0, pixels.Color(OFF));
+      pixels.show();
+      }
+  }
+  else {
+    if (millis() - blinktimeoff > 300 && millis() - blinktimeon > 600) {
+       if (LEDbin[0] == 1) {
+        //pixels.clear();
+        pixels.setPixelColor(3, pixels.Color(0,0,200));
+       }
+       else {
+        //pixels.clear();
+        pixels.setPixelColor(3, pixels.Color(OFF));
+       }
+       if (LEDbin[1] == 1) {
+        pixels.setPixelColor(2, pixels.Color(0,0,200));
+       }
+       else {
+        pixels.setPixelColor(2, pixels.Color(OFF));
+       }
+       if (LEDbin[2] == 1) {
+        pixels.setPixelColor(1, pixels.Color(0,0,200));
+       }
+       else {
+        pixels.setPixelColor(1, pixels.Color(OFF));
+       }
+       if (LEDbin[3] == 1) {
+        pixels.setPixelColor(0, pixels.Color(0,0,200));
+        pixels.show();
+        blinktimeon = millis();
+       }
+       else {
+        pixels.setPixelColor(0, pixels.Color(OFF));
+        pixels.show();
+        blinktimeon = millis();
+       }
+    }
+    else if (millis() - blinktimeon > 300 && millis() - blinktimeoff > 600) {
+       pixels.clear();
+       pixels.show();
+       blinktimeoff = millis();
+    }
+    
+  }
+
+
+
+
 
   
 }

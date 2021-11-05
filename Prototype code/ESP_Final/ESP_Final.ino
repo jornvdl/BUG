@@ -65,7 +65,8 @@ void loop() {
        bleKeyboard.end();
        esp_deep_sleep_start();
     }
-  
+
+  bleKeyboard.setBatteryLevel(70);
 
   
    int layout = *bleKeyboard.getLayout();

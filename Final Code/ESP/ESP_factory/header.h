@@ -1,10 +1,11 @@
 #ifndef _HEADERFILE_H    // Put these two lines at the top of your file.
 #define _HEADERFILE_H    // (Use a suitable name, usually based on the file name.)
 
-#define buttonPin   18  //set the buttonpin   19 final 18 prototype
-#define confPin     5   //set the conf button pin   2 final 5 prototype
-#define NEOPIN      19   //set the pin for the neopixels   1 final 19 prototype
+#define buttonPin   19  //set the buttonpin   19 final 18 prototype
+#define confPin     2   //set the conf button pin   2 final 5 prototype
+#define NEOPIN      1   //set the pin for the neopixels   1 final 19 prototype
 #define NUMPIXELS   4   //set the amount of neopixels
+#define readyPin    4   //set ready pin as 4
 #define WHITE       255, 255, 255 //set the rgb value for white
 #define BLUE        0, 0, 255     //set the rgb value for blue
 #define RED         255, 0, 0     //set the rgb value for red
@@ -27,11 +28,11 @@ char s = 115;
 char d = 100;
 
 //factory setting keypress, colour and layout
-int KeyFact[5][5] = {{arrowup, 0x08, 0x20, 0x22, 0x01},
-                      {arrowleft, 0x08, 0x20, 0x22, 0x02},
-                      {arrowdown, 0x08, 0x20, 0x22, 0x04},        
-                      {arrowright, 0x08, 0x20, 0x22, 0x08},         
-                      {space, 0x08, 0x20, 0x22, 0x0E}};
+int KeyFact[5][5] = {{arrowup, 0xA0, 0xF0, 0xFF, 0x01},
+                      {arrowleft, 0xA0, 0xF0, 0xFF, 0x02},
+                      {arrowdown, 0xA0, 0xF0, 0xFF, 0x04},        
+                      {arrowright, 0xA0, 0xF0, 0xFF, 0x08},         
+                      {space, 0xA0, 0xF0, 0xFF, 0x0E}};
 //initialise LED binary array
 int LEDbin[] = {0,0,0,0};
 
@@ -50,3 +51,5 @@ int n = 0;
 unsigned long TimeSleep = 0;
 bool factsettings = true;
 unsigned long recentPress = 0;
+unsigned long blinktimeon = 0;
+unsigned long blinktimeoff = 0;
