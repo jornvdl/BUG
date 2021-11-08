@@ -142,3 +142,15 @@ void LEDsBlink(int colour0, int colour1, int colour2) {
       pixels.show();
       delay(500);
 }
+
+void MemoryUpdate(int colour0, int colour1, int colour2, int layout, int keybind, int timeout, int n){
+  preferences.begin("bug_data", false);
+  preferences.putInt("cRed", colour0);
+  preferences.putInt("cGreen", colour1);
+  preferences.putInt("cBlue", colour2);
+  preferences.putInt("key", keybind);
+  preferences.putInt("layout", layout);
+  preferences.putInt("timeout", timeout);
+  preferences.putInt("factcount", n);
+  preferences.end();
+}

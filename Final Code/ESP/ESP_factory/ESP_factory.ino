@@ -4,18 +4,20 @@
  * Institution: Delft University of Technology
  * Date: 2021/22/01
  */
-
+#define USE_NIMBLE
 #include "header.h"
 #include <BleKeyboardGATT.h>
 #include <Adafruit_NeoPixel.h>
 
 //Set the BUG name
-BleKeyboard bleKeyboard("BUGsy");;
+BleKeyboard bleKeyboard("BUGsy");
 
 //Initialise the Neopixels as "pixels"
 Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIN, NEO_GRB + NEO_KHZ800);
 #define DELAYVAL 500 //Time in milliseconds to pause between pixels
 #include "functions.h"
+
+
 void setup() {
   // Setup code, runs once
   Serial.begin(115200);
@@ -193,7 +195,7 @@ void loop() {
       LEDupdate(LEDbin,colour[0],colour[1],colour[2]);
 
   }
-  else if (not(bleKeyboard.isConnected())) {
+  else if (!(bleKeyboard.isConnected())) {
     if (millis() - blinktimeoff > 300 && millis() - blinktimeon > 600) {
        LEDupdate(LEDbin,0,0,255);
        blinktimeon = millis();
