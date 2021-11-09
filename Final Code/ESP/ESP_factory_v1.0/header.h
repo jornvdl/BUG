@@ -6,6 +6,7 @@
 #define NEOPIN      1   //set the pin for the neopixels   1 final 19 prototype
 #define NUMPIXELS   4   //set the amount of neopixels
 #define readyPin    4   //set ready pin as 4
+#define BatteryPin  0
 
 
 #endif // _HEADERFILE_H    // Put this line at the end of your file.

@@ -184,8 +184,7 @@ void keyboard_initialise(){
 
 void BLEdisconnected(){
   //Set neopixels according to LEDbin top = LEDbin[3], left = LEDbin[2], down = LEDbin[1], right = LEDbin[0]
-  //neo pixels: top = 0, left = 1, down = 2, right = 3;
-  //static int LEDbintemp2[4] = {*layout_hextobin(), *(layout_hextobin()+1), *(layout_hextobin()+2), *(layout_hextobin()+3)};      
+  //neo pixels: top = 0, left = 1, down = 2, right = 3; 
 
   if (millis() - blinktimeoff > 300 && millis() - blinktimeon > 600) {
     if (*layout_hextobin() == 1) {
@@ -222,4 +221,31 @@ void BLEdisconnected(){
     blinktimeoff = millis();
   }
     
+}
+
+void Batterypercentage(){
+  int m = 0;
+  int batmeasure[20];
+  int total = 0;
+  float a = 0.00005;
+  float b = 0.002;
+  float c = 3.1787;
+  while (m < 20){
+    batmeasure[m] = analogRead(BatteryPin);
+    total = total + batmeasure[m];
+    m++;
+  }
+  float avg = total/20;
+  float voltage = avg/1489;//2600=>1575 currently use 2750=>1489
+  float bV = voltage*2.67;
+
+  float battpercent = sqrt((bV/a) + (sq(b)/2*a) - (c/a)) - b/(2*a);
+  if(battpercent>100){
+    battpercent = 100;
+  }
+  int batt = round(battpercent);
+  int batt05 = batt/5;
+  int battfin = batt05*5;
+  bleKeyboard.setBatteryLevel(battfin);
+  
 }

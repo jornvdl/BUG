@@ -22,6 +22,7 @@ Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
   // put your setup code here, to run once:
+  Serial.begin(115200);
   //start the Neopixels and BleKeyboard
   bleKeyboard.begin();
   pixels.begin();
@@ -30,6 +31,7 @@ void setup() {
   pinMode(buttonPin, INPUT); //set the buttonpin as pulldown
   pinMode(confPin, INPUT);   //set the confpin as pulldown
   pinMode(readyPin, OUTPUT); //set the ready pin as output
+  pinMode(BatteryPin, INPUT); //set the battery pin as input
 
   //pull the configurations variables from flash memory
   MemoryPull();
@@ -163,17 +165,19 @@ void loop() {
 
   //LED updates/bluetooth connectivity///////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if (bleKeyboard.isConnected() && (*bleKeyboard.isUpdated()||confUpdate||startup) ) {
-      confUpdate = false;
-      startup = false;
+    confUpdate = false;
+    startup = false;
     if (*bleKeyboard.isUpdated()) {
       timeDeepSleep = *bleKeyboard.getTimeout();
       TimeSleep = millis();       //reset sleep timing
       bleKeyboard.rstUpdate();    //reset the update flag
     }
-      //Set neopixels according to LEDbin top = LEDbin[3], left = LEDbin[2], down = LEDbin[1], right = LEDbin[0]
-      //neo pixels: top = 0, left = 1, down = 2, right = 3;
-      LEDupdate();
-
+    //Set neopixels according to LEDbin top = LEDbin[3], left = LEDbin[2], down = LEDbin[1], right = LEDbin[0]
+    //neo pixels: top = 0, left = 1, down = 2, right = 3;
+    LEDupdate();
+    Batterypercentage();
+    Serial.print(analogRead(BatteryPin));
+    Serial.print("\n");
   }
   else if (!(bleKeyboard.isConnected())) {
       BLEdisconnected();
