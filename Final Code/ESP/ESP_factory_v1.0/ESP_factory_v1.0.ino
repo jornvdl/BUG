@@ -11,7 +11,7 @@
 #include <Preferences.h>
 
 //Set the BUG name
-BleKeyboard bleKeyboard("GAMERBUG");
+BleKeyboard bleKeyboard("BUGsy");
 //Set the memory system as preferences
 Preferences preferences;
 //Initialise the Neopixels as "pixels"
@@ -64,6 +64,8 @@ void loop() {
     bleKeyboard.rstUpdate();                //reset the update flag
     bleKeyboard.setColour(&KeyFact[n][1]);  //reset the LED colour to factory settings
   }
+
+  
 
   //Check if the device has been on for longer than the timeout value/////////////////////////////////////////////////////////////////////////////////
   if ((millis()/1000 - TimeSleep/1000) > *bleKeyboard.getTimeout()) {

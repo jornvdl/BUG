@@ -3,14 +3,14 @@
 #endif // _FUNCTIONS_H    // Put this line at the end of your file.
 int * layout_hextobin(){
   static int LEDtemp[] = {0,0,0,0};
-  int layouttemp = *bleKeyboard.getLayout();
-  if (layouttemp < 0x8) {
+  layout_main = *bleKeyboard.getLayout();
+  if (layout_main < 0x8) {
     LEDtemp[0] = 0;
-    if (layouttemp< 0x4) {
+    if (layout_main< 0x4) {
       LEDtemp[1] = 0;
-      if (layouttemp< 0x2) {
+      if (layout_main< 0x2) {
         LEDtemp[2] = 0;
-        if (layouttemp== 0x0) {
+        if (layout_main== 0x0) {
           LEDtemp[3] = 0;
         }
         else {
@@ -19,7 +19,7 @@ int * layout_hextobin(){
       }
       else {
         LEDtemp[2] = 1;
-        if (layouttemp> 0x2) {
+        if (layout_main> 0x2) {
           LEDtemp[3] = 1;
         }
         else {
@@ -29,9 +29,9 @@ int * layout_hextobin(){
     }
     else {
       LEDtemp[1] = 1;
-      if (layouttemp< 0x6) {
+      if (layout_main< 0x6) {
         LEDtemp[2] = 0;
-        if (layouttemp== 0x4) {
+        if (layout_main== 0x4) {
           LEDtemp[3] = 0;
         }
         else {
@@ -40,7 +40,7 @@ int * layout_hextobin(){
       }
       else {
         LEDtemp[2] = 1;
-        if (layouttemp== 0x6) {
+        if (layout_main== 0x6) {
           LEDtemp[3] = 0;
         }
         else {
@@ -52,11 +52,11 @@ int * layout_hextobin(){
   else {
     
     LEDtemp[0] = 1;
-    if (layouttemp< 0xC) {
+    if (layout_main< 0xC) {
       LEDtemp[1] = 0;
-      if (layouttemp< 0xA) {
+      if (layout_main< 0xA) {
         LEDtemp[2] = 0;
-        if (layouttemp== 0x8) {
+        if (layout_main== 0x8) {
           LEDtemp[3] = 0;
         }
         else {
@@ -65,7 +65,7 @@ int * layout_hextobin(){
       }
       else {
         LEDtemp[2] = 1;
-        if (layouttemp== 0xA) {
+        if (layout_main== 0xA) {
           LEDtemp[3] = 0;
         }
         else {
@@ -75,9 +75,9 @@ int * layout_hextobin(){
     }
     else {
       LEDtemp[1] = 1;
-      if (layouttemp< 0xE) {
+      if (layout_main< 0xE) {
         LEDtemp[2] = 0;
-        if (layouttemp== 0xC) {
+        if (layout_main== 0xC) {
           LEDtemp[3] = 0;
         }
         else {
@@ -86,7 +86,7 @@ int * layout_hextobin(){
       }
       else {
         LEDtemp[2] = 1;
-        if (layouttemp== 0xE) {
+        if (layout_main== 0xE) {
           LEDtemp[3] = 0;
         }
         else {
@@ -102,7 +102,10 @@ int * layout_hextobin(){
 void LEDupdate() {
       //Set neopixels according to LEDbin top = LEDbin[3], left = LEDbin[2], down = LEDbin[1], right = LEDbin[0]
       //neo pixels: top = 0, left = 1, down = 2, right = 3;
-      static int LEDbin[4] = {*layout_hextobin(), *(layout_hextobin()+1), *(layout_hextobin()+2), *(layout_hextobin()+3)};      
+      LEDbin[0] = *layout_hextobin();
+      LEDbin[1] = *(layout_hextobin()+1);
+      LEDbin[2] = *(layout_hextobin()+2);
+      LEDbin[3] = *(layout_hextobin()+3);      
       if (LEDbin[0] == 1) {
       pixels.setPixelColor(3, pixels.Color(*bleKeyboard.getColour(),*(bleKeyboard.getColour()+1),*(bleKeyboard.getColour()+2)));
       }
@@ -182,28 +185,28 @@ void keyboard_initialise(){
 void BLEdisconnected(){
   //Set neopixels according to LEDbin top = LEDbin[3], left = LEDbin[2], down = LEDbin[1], right = LEDbin[0]
   //neo pixels: top = 0, left = 1, down = 2, right = 3;
-  static int LEDbin[4] = {*layout_hextobin(), *(layout_hextobin()+1), *(layout_hextobin()+2), *(layout_hextobin()+3)};      
+  //static int LEDbintemp2[4] = {*layout_hextobin(), *(layout_hextobin()+1), *(layout_hextobin()+2), *(layout_hextobin()+3)};      
 
   if (millis() - blinktimeoff > 300 && millis() - blinktimeon > 600) {
-    if (LEDbin[0] == 1) {
+    if (*layout_hextobin() == 1) {
     pixels.setPixelColor(3, pixels.Color(0,0,255));
     }
     else {
     pixels.setPixelColor(3, pixels.Color(0,0,0));
     }
-    if (LEDbin[1] == 1) {
+    if (*(layout_hextobin()+1) == 1) {
     pixels.setPixelColor(2, pixels.Color(0,0,255));
     }
     else {
     pixels.setPixelColor(2, pixels.Color(0,0,0));
     }
-    if (LEDbin[2] == 1) {
+    if (*(layout_hextobin()+2) == 1) {
     pixels.setPixelColor(1, pixels.Color(0,0,255));
     }
     else {
     pixels.setPixelColor(1, pixels.Color(0,0,0));
     }
-    if (LEDbin[3] == 1) {
+    if (*(layout_hextobin()+3) == 1) {
     pixels.setPixelColor(0, pixels.Color(0,0,255));
     pixels.show();
     }
