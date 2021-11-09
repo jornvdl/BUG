@@ -4,18 +4,23 @@
  * Institution: Delft University of Technology
  * Date: 2021/22/01
  */
-
+#define USE_NIMBLE
 #include "header.h"
 #include <BleKeyboardGATT.h>
 #include <Adafruit_NeoPixel.h>
+#include <Preferences.h>
 
 //Set the BUG name
-BleKeyboard bleKeyboard("BUGsy");;
+BleKeyboard bleKeyboard("BUGsy");
+Preferences preferences;
 
 //Initialise the Neopixels as "pixels"
 Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIN, NEO_GRB + NEO_KHZ800);
 #define DELAYVAL 500 //Time in milliseconds to pause between pixels
+
 #include "functions.h"
+
+
 void setup() {
   // Setup code, runs once
   Serial.begin(115200);
@@ -25,16 +30,13 @@ void setup() {
   pinMode(buttonPin, INPUT); //set the buttonpin as pulldown
   pinMode(confPin, INPUT);   //set the confpin as pulldown
   pinMode(readyPin, OUTPUT);                 //set the ready pin as output
-  //Initialise the LED colour, Layout, and the keybinding.
-  int colour[3] = {0xFF, 0xFE, 0xFD}; //random vars
-  int layout = 0x0F;  // 16, all on
-  int keybind = 0x20; //space
-  int timeout = 300;
+
+  MemoryPull();
   
-  bleKeyboard.setTimeout(&timeout);
+  bleKeyboard.setTimeout(&timeDeepSleep);
   bleKeyboard.setKey(&keybind);
-  bleKeyboard.setColour(&colour[0]);
-  bleKeyboard.setLayout(&layout);
+  bleKeyboard.setColour(&colour_main[0]);
+  bleKeyboard.setLayout(&layout_main);
   bleKeyboard.rstUpdate();
   bleKeyboard.rstFactory();
   bleKeyboard.rstKeyFlag();
@@ -62,17 +64,20 @@ void loop() {
   if ((millis()/1000 - TimeSleep/1000) > *bleKeyboard.getTimeout()) {
      LEDsoff();
      digitalWrite(readyPin,LOW);
+     MemoryStore(colour_main[0], colour_main[1], colour_main[2], layout_main, keybind, timeDeepSleep, n);
      esp_deep_sleep_start();    //set the BUG to deep sleep
   }
 
 
-  int layout = *bleKeyboard.getLayout();
-  int colour[3] = {*bleKeyboard.getColour(),*(bleKeyboard.getColour()+1),*(bleKeyboard.getColour()+2)};
+  layout_main = *bleKeyboard.getLayout();
+  colour_main[0] = *bleKeyboard.getColour();
+  colour_main[1] = *(bleKeyboard.getColour()+1);
+  colour_main[2] = *(bleKeyboard.getColour()+2);
   //convert hexadecimal layout to binary
-  LEDbin[0] = *layout_hextobin(layout);
-  LEDbin[1] = *(layout_hextobin(layout)+1);
-  LEDbin[2] = *(layout_hextobin(layout)+2);
-  LEDbin[3] = *(layout_hextobin(layout)+3);
+  LEDbin[0] = *layout_hextobin(layout_main);
+  LEDbin[1] = *(layout_hextobin(layout_main)+1);
+  LEDbin[2] = *(layout_hextobin(layout_main)+2);
+  LEDbin[3] = *(layout_hextobin(layout_main)+3);
 
   
 
@@ -121,7 +126,7 @@ void loop() {
     }
     //Have all the pixels blink to indicate the gamepad will reset to factory setting if the button is released
     if((millis() - TimePressed) > LongPress) {
-      LEDsBlink(colour[0],colour[1],colour[2]);
+      LEDsBlink(colour_main[0],colour_main[1],colour_main[2]);
       LastConfState = HIGH;
       factsettings = true;
     }
@@ -156,6 +161,7 @@ void loop() {
     LEDsoff();
     bleKeyboard.end();
     digitalWrite(readyPin, LOW);
+    MemoryStore(colour_main[0], colour_main[1], colour_main[2], layout_main, keybind, timeDeepSleep, n);
     esp_deep_sleep_start();     //start deepsleep
   }
   //check if the button was prssed long enough for factory settings mode
@@ -174,26 +180,27 @@ void loop() {
   }
 
 
-  layout = *bleKeyboard.getLayout();
+  layout_main = *bleKeyboard.getLayout();
   //convert hexadecimal layout to binary
-  LEDbin[0] = *layout_hextobin(layout);
-  LEDbin[1] = *(layout_hextobin(layout)+1);
-  LEDbin[2] = *(layout_hextobin(layout)+2);
-  LEDbin[3] = *(layout_hextobin(layout)+3);
+  LEDbin[0] = *layout_hextobin(layout_main);
+  LEDbin[1] = *(layout_hextobin(layout_main)+1);
+  LEDbin[2] = *(layout_hextobin(layout_main)+2);
+  LEDbin[3] = *(layout_hextobin(layout_main)+3);
 
   if (bleKeyboard.isConnected() && (*bleKeyboard.isUpdated()||confUpdate||startup) ) {
       confUpdate = false;
       startup = false;
     if (*bleKeyboard.isUpdated()) {
+      timeDeepSleep = *bleKeyboard.getTimeout();
       TimeSleep = millis();       //reset sleep timing
       bleKeyboard.rstUpdate();    //reset the update flag
     }
       //Set neopixels according to LEDbin top = LEDbin[3], left = LEDbin[2], down = LEDbin[1], right = LEDbin[0]
       //neo pixels: top = 0, left = 1, down = 2, right = 3;
-      LEDupdate(LEDbin,colour[0],colour[1],colour[2]);
+      LEDupdate(LEDbin,colour_main[0],colour_main[1],colour_main[2]);
 
   }
-  else if (not(bleKeyboard.isConnected())) {
+  else if (!(bleKeyboard.isConnected())) {
     if (millis() - blinktimeoff > 300 && millis() - blinktimeon > 600) {
        LEDupdate(LEDbin,0,0,255);
        blinktimeon = millis();
