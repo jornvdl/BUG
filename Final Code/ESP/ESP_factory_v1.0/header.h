@@ -6,12 +6,7 @@
 #define NEOPIN      1   //set the pin for the neopixels   1 final 19 prototype
 #define NUMPIXELS   4   //set the amount of neopixels
 #define readyPin    4   //set ready pin as 4
-#define WHITE       255, 255, 255 //set the rgb value for white
-#define BLUE        0, 0, 255     //set the rgb value for blue
-#define RED         255, 0, 0     //set the rgb value for red
-#define GREEN       0, 255, 0     //set the rgb value for green
-#define PURPLE      255, 0, 255   //set the rgb value for purple
-#define OFF         0, 0, 0       //set the rgb value for OFF
+
 
 #endif // _HEADERFILE_H    // Put this line at the end of your file.
 
@@ -45,13 +40,21 @@ int LastState = LOW;
 int CurrentConfState;
 int LastConfState = LOW;
 
+//General variables
+int keybind = 0x20;
+int colour_main[3] = {0x22, 0xA0, 0xFF};
+int layout_main = 0x0E;
+int timeDeepSleep = 300;
+int n = 0; 
+
+
 unsigned long TimePressed = 0;
 unsigned long TimeReleased = 0;
-int n = 0;
 unsigned long TimeSleep = 0;
-bool factsettings = true;
-bool confUpdate = false;
-bool startup = false;
 unsigned long recentPress = 0;
 unsigned long blinktimeon = 0;
 unsigned long blinktimeoff = 0;
+
+bool factsettings = true;
+bool confUpdate = false;
+bool startup = false;
