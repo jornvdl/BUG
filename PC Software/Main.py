@@ -16,6 +16,7 @@ from adafruit_ble import BLERadio
 
 from adafruit_ble.advertising import Advertisement
 from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
+import time
 
 padname = "GAMERBUG"
 
@@ -41,4 +42,8 @@ print("scan done")
 
 for bug in gamepads:
     print (bug)
-    ble.connect(bug)    
+    ble.connect(bug)
+
+while len(ble.connections) > 0:
+    print ("Connected to at least one BUG!")
+    time.sleep(2)
