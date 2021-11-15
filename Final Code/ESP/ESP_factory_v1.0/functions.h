@@ -148,6 +148,15 @@ void LEDsBlink() {
       delay(500);
 }
 
+void LEDsBlinkcolour(int Colour1, int Colour2, int Colour3) {
+  pixels.fill(pixels.Color(Colour1,Colour2,Colour3));
+  pixels.show();
+  delay(500);
+  pixels.clear();
+  pixels.show();
+  delay(500);
+}
+
 void MemoryStore(int n){
   preferences.begin("bug_data", false);
   preferences.putInt("cRed", *bleKeyboard.getColour());
@@ -222,7 +231,7 @@ void BLEdisconnected(){
   }
     
 }
-
+/*
 void Batterypercentage(){
   int m = 0;
   int batmeasure[20];
@@ -248,4 +257,28 @@ void Batterypercentage(){
   int battfin = batt05*5;
   bleKeyboard.setBatteryLevel(battfin);
   
+}
+*/
+void Batterypercentage(){
+  int m = 0;
+  int batmeasure[20];
+  int total = 0;
+  float a = 0.00005;
+  float b = 0.002;
+  float c = 3.1787;
+  while (m < 20){
+    batmeasure[m] = analogRead(BatteryPin);
+    total = total + batmeasure[m];
+    m++;
+  }
+  float avg = total/20;
+  float bV = 0.0021*avg - 0.4452;
+  float battpercent = sqrt((bV/a) + (sq(b)/2*a) - (c/a)) - b/(2*a);
+  if(battpercent>100){
+    battpercent = 100;
+  }
+  int batt = round(battpercent);
+  int batt05 = batt/5;
+  int battfin = batt05*5;
+  bleKeyboard.setBatteryLevel(battfin);
 }
