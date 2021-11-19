@@ -73,7 +73,7 @@ void loop() {
   if ((millis()/1000 - TimeSleep/1000) > *bleKeyboard.getTimeout()) {
      LEDsoff();
      digitalWrite(readyPin,LOW);
-     MemoryStore(n);
+     MemoryStore(n,factsettings);
      esp_deep_sleep_start();    //set the BUG to deep sleep
   }
 
@@ -129,7 +129,7 @@ void loop() {
     LEDsoff();
     bleKeyboard.end();
     digitalWrite(readyPin, LOW);
-    MemoryStore(n);
+    MemoryStore(n,factsettings);
     esp_deep_sleep_start();     //start deepsleep
   }
   //check if the button was prssed long enough for factory settings mode

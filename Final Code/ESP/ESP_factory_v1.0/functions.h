@@ -2,101 +2,14 @@
 #define _FUNCTIONS_H    // (Use a suitable name, usually based on the file name.)
 #endif // _FUNCTIONS_H    // Put this line at the end of your file.
 int * layout_hextobin(){
-  static int LEDtemp[] = {0,0,0,0};
+  static int Bintemp[] = {0,0,0,0};
   layout_main = *bleKeyboard.getLayout();
-  if (layout_main < 0x8) {
-    LEDtemp[0] = 0;
-    if (layout_main< 0x4) {
-      LEDtemp[1] = 0;
-      if (layout_main< 0x2) {
-        LEDtemp[2] = 0;
-        if (layout_main== 0x0) {
-          LEDtemp[3] = 0;
-        }
-        else {
-          LEDtemp[3] = 1;
-        }
-      }
-      else {
-        LEDtemp[2] = 1;
-        if (layout_main> 0x2) {
-          LEDtemp[3] = 1;
-        }
-        else {
-          LEDtemp[3] = 0;
-        }
-      }
-    }
-    else {
-      LEDtemp[1] = 1;
-      if (layout_main< 0x6) {
-        LEDtemp[2] = 0;
-        if (layout_main== 0x4) {
-          LEDtemp[3] = 0;
-        }
-        else {
-          LEDtemp[3] = 1;
-        }
-      }
-      else {
-        LEDtemp[2] = 1;
-        if (layout_main== 0x6) {
-          LEDtemp[3] = 0;
-        }
-        else {
-          LEDtemp[3] = 1;
-        }
-      }
-    }
-  }
-  else {
-    
-    LEDtemp[0] = 1;
-    if (layout_main< 0xC) {
-      LEDtemp[1] = 0;
-      if (layout_main< 0xA) {
-        LEDtemp[2] = 0;
-        if (layout_main== 0x8) {
-          LEDtemp[3] = 0;
-        }
-        else {
-          LEDtemp[3] = 1;
-        }
-      }
-      else {
-        LEDtemp[2] = 1;
-        if (layout_main== 0xA) {
-          LEDtemp[3] = 0;
-        }
-        else {
-          LEDtemp[3] = 1;
-        }
-      }
-    }
-    else {
-      LEDtemp[1] = 1;
-      if (layout_main< 0xE) {
-        LEDtemp[2] = 0;
-        if (layout_main== 0xC) {
-          LEDtemp[3] = 0;
-        }
-        else {
-          LEDtemp[3] = 1;
-        }
-      }
-      else {
-        LEDtemp[2] = 1;
-        if (layout_main== 0xE) {
-          LEDtemp[3] = 0;
-        }
-        else {
-          LEDtemp[3] = 1;
-        }
-      }
-    }
-  }
+  Bintemp[3] = (layout_main &1);
+  Bintemp[2] = (layout_main>>1 &1);
+  Bintemp[1] = (layout_main>>2 &1);
+  Bintemp[0] = (layout_main>>3 &1);
+  return Bintemp;
 
-  return LEDtemp;
 }
 
 void LEDupdate() {
@@ -157,7 +70,7 @@ void LEDsBlinkcolour(int Colour1, int Colour2, int Colour3) {
   delay(500);
 }
 
-void MemoryStore(int n){
+void MemoryStore(int n, int factsettings){
   preferences.begin("bug_data", false);
   preferences.putInt("cRed", *bleKeyboard.getColour());
   preferences.putInt("cGreen", *(bleKeyboard.getColour()+1));
@@ -166,6 +79,7 @@ void MemoryStore(int n){
   preferences.putInt("layout", *bleKeyboard.getLayout());
   preferences.putInt("timeout", *bleKeyboard.getTimeout());
   preferences.putInt("factcount", n);
+  preferences.putInt("factset", factsettings);
   preferences.end();
 }
 
@@ -178,6 +92,7 @@ void MemoryPull(){
   layout_main = preferences.getInt("layout", 0x0F);
   timeDeepSleep = preferences.getInt("timeout", 300);
   n = preferences.getInt("factcount", 0);
+  factsettings = preferences.getInt("factset", true);
   preferences.end();
 }
 
