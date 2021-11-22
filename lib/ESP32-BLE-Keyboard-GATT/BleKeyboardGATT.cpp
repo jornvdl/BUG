@@ -224,11 +224,6 @@ void BleKeyboard::begin(void)
   
   pService->start();
 
-  keyCharacteristic->setName("Keybind");
-  indicatorCharacteristic->setName("Indicator");
-  timeoutCharacteristic->setName("Timeout");
-  stateCharacteristic->setName("Mode");
-  pService->setName("BUG Custom characteristics")
 
   ////////////////////////////////////////////////////////////////////////////////////////
   // Above is the newly added part. //////////////////////////////////////////////////////
