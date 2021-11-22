@@ -4,7 +4,7 @@
 # Class
 #######################################
 
-BleKeyboard	KEYWORD1
+BleKeyboard		KEYWORD1
 
 #######################################
 # Methods and Functions
@@ -28,7 +28,7 @@ flgRstTimer		KEYWORD2
 flgRstBUG		KEYWORD2
 flgIdentify		KEYWORD2
 flgWASD			KEYWORD2
-flgKeys			KEYWORD2
+cirKeys			KEYWORD2
 
 #######################################
 # Constants

@@ -159,8 +159,8 @@ public:
   void flgIdentify(bool flg);
   bool* flgWASD();
   void flgWASD(bool flg);
-  bool* flgKeys();
-  void flgKeys(bool* k);
+  bool* cirKeys();
+  void cirKeys(bool* k);
 
 
 protected:

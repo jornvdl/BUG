@@ -744,7 +744,7 @@ bool* BleKeyboard::flgRstTimer() {
 }
 
 void BleKeyboard::flgRstTimer(bool flg) {
-	rstTimer = *flg; 
+	rstTimer = flg; 
 }
 
 // Share and reset factory flag
@@ -753,7 +753,7 @@ bool* BleKeyboard::flgRstBUG() {
 }
 
 void BleKeyboard::flgRstBUG(bool flg) {
-	flgRstBUG = *flg;
+	flgRstBUG = flg;
 }
 
 // Share mode flags
@@ -762,7 +762,7 @@ bool* BleKeyboard::flgIdentify() {
 }
 
 void BleKeyboard::flgIdentify(bool flg) {
-	flgIdentify = *flg;
+	flgIdentify = flg;
 }
 
 bool* BleKeyboard::flgWASD() {
@@ -770,14 +770,14 @@ bool* BleKeyboard::flgWASD() {
 }
 
 void BleKeyboard::flgWASD(bool flg) {
-	wasd = *flg;
+	wasd = flg;
 }
 
-bool* BleKeyboard::flgKeys() {
+bool* BleKeyboard::cirKeys() {
 	return &keys[0];
 }
 
-void BleKeyboard::flgKeys(bool* k) {
+void BleKeyboard::cirKeys(bool* k) {
 	for (int i = 0; i < 5; i++) {
 		keys[i] = *(k+i);
 	}
