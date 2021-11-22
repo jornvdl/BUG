@@ -99,6 +99,9 @@ class stateCallbacks: public BLECharacteristicCallbacks {
     keys[2]		=	(*data & 0x02) == 0x02;
     keys[3]		=	(*data & 0x01) == 0x01;
 
+
+    int written = rstBUG * 128 + identify * 64 + wasd * 32 + keys[4] * 16 + keys[0] * 8 + keys[1] * 4 + keys[2] * 2 + keys[1];
+    stateCharacteristic->setValue(written);
   }
 };
 
@@ -749,6 +752,9 @@ bool* BleKeyboard::flgRstBUG() {
 
 void BleKeyboard::flgRstBUG(bool flg) {
 	flgRstBUG = flg;
+
+	int written = rstBUG * 128 + identify * 64 + wasd * 32 + keys[4] * 16 + keys[0] * 8 + keys[1] * 4 + keys[2] * 2 + keys[1];
+  stateCharacteristic->setValue(written);
 }
 
 // Share mode flags
@@ -758,6 +764,9 @@ bool* BleKeyboard::flgIdentify() {
 
 void BleKeyboard::flgIdentify(bool flg) {
 	flgIdentify = flg;
+
+	int written = rstBUG * 128 + identify * 64 + wasd * 32 + keys[4] * 16 + keys[0] * 8 + keys[1] * 4 + keys[2] * 2 + keys[1];
+  stateCharacteristic->setValue(written);
 }
 
 bool* BleKeyboard::flgWASD() {
@@ -766,6 +775,9 @@ bool* BleKeyboard::flgWASD() {
 
 void BleKeyboard::flgWASD(bool flg) {
 	wasd = flg;
+
+	int written = rstBUG * 128 + identify * 64 + wasd * 32 + keys[4] * 16 + keys[0] * 8 + keys[1] * 4 + keys[2] * 2 + keys[1];
+  stateCharacteristic->setValue(written);
 }
 
 bool* BleKeyboard::cirKeys() {
@@ -776,4 +788,7 @@ void BleKeyboard::cirKeys(bool* k) {
 	for (int i = 0; i < 5; i++) {
 		keys[i] = *(k+i);
 	}
+
+	int written = rstBUG * 128 + identify * 64 + wasd * 32 + keys[4] * 16 + keys[0] * 8 + keys[1] * 4 + keys[2] * 2 + keys[1];
+  stateCharacteristic->setValue(written);
 }
