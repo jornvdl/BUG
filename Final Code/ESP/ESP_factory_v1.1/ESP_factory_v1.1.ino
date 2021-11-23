@@ -12,7 +12,7 @@
 #include <Adafruit_NeoPixel.h>
 #include <Preferences.h>
 
-#define debug 1
+#define debug 0
 
 //Set the BUG name
 BleKeyboard bleKeyboard("BUGsy");
@@ -54,7 +54,9 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  
+  while (!*bleKeyboard.flgRstBUG() && !*bleKeyboard.flgRstTimer() && !*bleKeyboard.flgIdentify() && digitalRead(confPin) == LOW && digitalRead(buttonPin) == LOW && !startup) {
+  //do nothing
+  }
   //check the array of keybind options
   keyArrayUpdate();
   //Check for updates from the PC/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,13 +65,18 @@ void loop() {
     factsettings = false;        //disable factory settings mode
     customKey = false;
   }
+  if (keyPrograms == true){
+    TimeSleep = millis();        //reset sleep timing    
+    factsettings = true;        //disable factory settings mode
+    keyPrograms = false;
+  }
 
   if (*bleKeyboard.flgRstBUG()){//Check if PC sent factory senttings
     n = 0;                                  //start keyloop back at default
     factsettings = true;                    //device in factory settings
     bleKeyboard.flgRstBUG(false);               //reset the factory settings flag
     bleKeyboard.flgRstTimer(false);                //reset the update flag
-    bleKeyboard.setColour(&KeyFact[n][1]);  //reset the LED colour to factory settings
+    bleKeyboard.setColour(&factColour[0]);  //reset the LED colour to factory settings
   }
 
   

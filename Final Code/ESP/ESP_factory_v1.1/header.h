@@ -75,3 +75,4 @@ bool factsettings = true;
 bool confUpdate = false;
 bool startup = false;
 bool customKey = false;
+bool keyPrograms = true;

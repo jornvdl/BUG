@@ -272,69 +272,7 @@ void keyArrayUpdate(){
   if(k == 0){
     customKey = true;
   }
+  else keyPrograms = true;
   }
 }
 
-
-/*
-int * keybindarray(){
-  int keyarraytemp[5] = {0,0,0,0,0};
-  int keysuse = *bleKeyboard.cirKeys();
-  m = 0;
-  if(bleKeyboard.flgWASD() == 0) {
-    if (keysuse &1) {
-      keyarraytemp[m] == arrowup;
-      m++;
-    }
-    if(keysuse>>1 &1) {
-      keyarraytemp[m] == arrowleft;
-      m++;
-    }
-    if(keysuse>>2 &1) {
-      keyarraytemp[m] == arrowdown;
-      m++;
-    }
-    if(keysuse>>3 &1) {
-      keyarraytemp[m] == arrowright;
-      m++;
-    }
-    if(keysuse>>4 &1) {
-      keyarraytemp[m] == space;
-      m++;
-    }
-  }
-  else if (bleKeyboard.flgWASD() == 1) {
-    if (keysuse &1) {
-      keyarraytemp[m] == w;
-      m++;
-    }
-    if(keysuse>>1 &1) {
-      keyarraytemp[m] == a;
-      m++;
-    }
-    if(keysuse>>2 &1) {
-      keyarraytemp[m] == s;
-      m++;
-    }
-    if(keysuse>>3 &1) {
-      keyarraytemp[m] == d;
-      m++;
-    }
-    if(keysuse>>4 &1) {
-      keyarraytemp[m] == space;
-      m++;
-    }
-  }
-  if(m == 0) {
-    customKey = true;
-  }
-  else {
-    customKey = false;
-  }
-  int keyarray[m];
-  for(int k = 0; k < m; k++) {
-    keyarray[k] = keyarraytemp[k];
-  } 
-  
-  return keyarray;
-}*/
