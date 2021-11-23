@@ -75,7 +75,7 @@ void MemoryStore(int n, int factsettings){
   preferences.putInt("cRed", *bleKeyboard.getColour());
   preferences.putInt("cGreen", *(bleKeyboard.getColour()+1));
   preferences.putInt("cBlue", *(bleKeyboard.getColour()+2));
-  preferences.putInt("key", *bleKeyboard.getKey());
+  preferences.putInt("key", *bleKeyboard.getKeybind());
   preferences.putInt("layout", *bleKeyboard.getLayout());
   preferences.putInt("timeout", *bleKeyboard.getTimeout());
   preferences.putInt("factcount", n);
@@ -98,12 +98,14 @@ void MemoryPull(){
 
 void keyboard_initialise(){
   bleKeyboard.setTimeout(&timeDeepSleep);
-  bleKeyboard.setKey(&keybind);
+  bleKeyboard.setKeybind(&keybind);
   bleKeyboard.setColour(&colour_main[0]);
   bleKeyboard.setLayout(&layout_main);
-  bleKeyboard.rstUpdate();
-  bleKeyboard.rstFactory();
-  bleKeyboard.rstKeyFlag();
+  bleKeyboard.flgRstTimer(false);
+  bleKeyboard.flgRstBUG(false);
+  bleKeyboard.flgIdentify(false);
+  bleKeyboard.flgWASD(false);
+  bleKeyboard.cirKeys(&keys[0]);
 }
 
 void BLEdisconnected(){
@@ -146,34 +148,7 @@ void BLEdisconnected(){
   }
     
 }
-/*
-void Batterypercentage(){
-  int m = 0;
-  int batmeasure[20];
-  int total = 0;
-  float a = 0.00005;
-  float b = 0.002;
-  float c = 3.1787;
-  while (m < 20){
-    batmeasure[m] = analogRead(BatteryPin);
-    total = total + batmeasure[m];
-    m++;
-  }
-  float avg = total/20;
-  float voltage = avg/1489;//2600=>1575 currently use 2750=>1489
-  float bV = voltage*2.67;
 
-  float battpercent = sqrt((bV/a) + (sq(b)/2*a) - (c/a)) - b/(2*a);
-  if(battpercent>100){
-    battpercent = 100;
-  }
-  int batt = round(battpercent);
-  int batt05 = batt/5;
-  int battfin = batt05*5;
-  bleKeyboard.setBatteryLevel(battfin);
-  
-}
-*/
 void Batterypercentage(){
   int m = 0;
   int batmeasure[20];
@@ -198,17 +173,115 @@ void Batterypercentage(){
   bleKeyboard.setBatteryLevel(battfin);
 }
 
+void keyArrayUpdate(){
+  int keyCirc = *bleKeyboard.cirKeys();
+  int k = 0;
+  if (!bleKeyboard.flgWASD()) {
+    if(keyCirc &1) {
+      keys[0,0] = &factArrowup;
+      keys[0,1] = &(factArrowup+1);
+      k++;
+    }
+    else {
+      keys[0,0] = &null;
+      keys[0,1] = &null;
+    }
+    if(keyCirc>>1 &1) {
+      keys[1,0] = &factArrowleft;
+      keys[1,1] = &(factArrowleft+1);
+      k++;
+    }
+    else {
+      keys[1,0] = &null;
+      keys[1,1] = &null;
+    }
+    if(keyCirc>>2 &1) {
+      keys[2,0] = &factArrowdown;
+      keys[2,1] = &(factArrowdown+1);
+      k++
+    }
+    else {
+      keys[2,0] = &null;
+      keys[2,1] = &null;
+    }
+    if(keyCirc>>3 &1) {
+      keys[3,0] = &factArrowright;
+      keys[3,1] = &(factArrowright+1);
+      k++;
+    }
+    else {
+      keys[3,0] = &null;
+      keys[3,1] = &null;
+    }
+    if(keyCirc>>4 &1) {
+      keys[4,0] = &space;
+      keys[4,1] = &(space+1);
+      k++;
+    }
+    else {
+      keys[4,0] = &null;
+      keys[4,1] = &null;
+    }
+  }
+  if (bleKeyboard.flgWASD()) {
+    if(keyCirc &1) {
+      keys[0,0] = &factW;
+      keys[0,1] = &(factW+1);
+      k++;
+    }
+    else {
+      keys[0,0] = &null;
+      keys[0,1] = &null;
+    }
+    if(keyCirc>>1 &1) {
+      keys[1,0] = &factA;
+      keys[1,1] = &(factA+1);
+      k++;
+    }
+    else {
+      keys[1,0] = &null;
+      keys[1,1] = &null;
+    }
+    if(keyCirc>>2 &1) {
+      keys[2,0] = &factS;
+      keys[2,1] = &(factS+1);
+      k++;
+    }
+    else {
+      keys[2,0] = &null;
+      keys[2,1] = &null;
+    }
+    if(keyCirc>>3 &1) {
+      keys[3,0] = &factD;
+      keys[3,1] = &(factD+1);
+      k++;
+    }
+    else {
+      keys[3,0] = &null;
+      keys[3,1] = &null;
+    }
+    if(keyCirc>>4 &1) {
+      keys[4,0] = &space;
+      keys[4,1] = &(space+1);
+      k++;
+    }
+    else {
+      keys[4,0] = &null;
+      keys[4,1] = &null;
+    }
+  }
+  if(k == 0){
+    customKey = true;
+  }
+}
+
+
+/*
 int * keybindarray(){
   int keyarraytemp[5] = {0,0,0,0,0};
-  int keystest[] = {0,1,0,1,0};
-  int keysuse = *keystest;//*bleKeyboard.keysUse();
-  int m = 0;
-  /*keys[0] = *keyuse;
-  keys[1] = *(keyuse+1);
-  keys[2] = *(keyuse+2);
-  keys[3] = *(keyuse+3);
-  keys[4] = *(keyuse+4);*/
-  if(/*bleKeyboard.keyMode()*/1 == 0) {
+  int keysuse = *bleKeyboard.cirKeys();
+  m = 0;
+  if(bleKeyboard.flgWASD() == 0) {
     if (keysuse &1) {
       keyarraytemp[m] == arrowup;
       m++;
@@ -230,7 +303,7 @@ int * keybindarray(){
       m++;
     }
   }
-  else if (/*bleKeyboard.keyMode()*/1 == 1) {
+  else if (bleKeyboard.flgWASD() == 1) {
     if (keysuse &1) {
       keyarraytemp[m] == w;
       m++;
@@ -252,10 +325,16 @@ int * keybindarray(){
       m++;
     }
   }
+  if(m == 0) {
+    customKey = true;
+  }
+  else {
+    customKey = false;
+  }
   int keyarray[m];
   for(int k = 0; k < m; k++) {
     keyarray[k] = keyarraytemp[k];
   } 
   
   return keyarray;
-}
+}*/

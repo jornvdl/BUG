@@ -32,6 +32,19 @@ int KeyFact[5][5] = {{arrowup, 0x22, 0xA0, 0xFF, 0x01},
 //initialise LED binary array
 int LEDbin[] = {0,0,0,0};
 
+//Factory setting key+layout and colour arrays
+int factColour[3] = {0x22, 0xA0, 0xFF};
+int factArrowup[2] = {218, 0x01};
+int factArrowleft[2] = {216, 0x02};
+int factArrowdown[2] = {217, 0x04};
+int factArrowright[2] = {215, 0x08};
+int factSpace[2] = {32, 0x0E};
+int factW[2] = {119,0x01};
+int factA[2] = {97,0x02};
+int factS[2] = {115,0x04};
+int factD[2] = {100,0x08};
+int *null = NULL;
+
 //initilisation for buttonpress timings and debounce of the configuration button
 const int ShortPress = 3000; //short press shorter than 3000 milliseconds
 const int LongPress = 7000;  //long press longer than 7000 miliseconds
@@ -47,7 +60,8 @@ int colour_main[3] = {0x22, 0xA0, 0xFF};
 int layout_main = 0x0E;
 int timeDeepSleep = 300;
 int n = 0; 
-bool keys[] = {0,0,0,0,0};
+int m = 0;
+int keys[5][2] = {{0,0},{0,0},{0,0},{0,0},{0,0}};
 
 
 unsigned long TimePressed = 0;
@@ -60,3 +74,4 @@ unsigned long blinktimeoff = 0;
 bool factsettings = true;
 bool confUpdate = false;
 bool startup = false;
+bool customKey = false;

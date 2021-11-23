@@ -52,20 +52,21 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-
-
+  
+  //check the array of keybind options
+  keyArrayUpdate();
   //Check for updates from the PC/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  if (*bleKeyboard.keySetBLE()) {//Check for a keybind update
+  if (customKey == true) {//Check for a keybind update
     TimeSleep = millis();        //reset sleep timing    
     factsettings = false;        //disable factory settings mode
-    bleKeyboard.rstKeyFlag();    //reset the KEY flag
+    customKey = false;
   }
 
-  if (*bleKeyboard.setFactory()){//Check if PC sent factory senttings
+  if (*bleKeyboard.flgRstBUG()){//Check if PC sent factory senttings
     n = 0;                                  //start keyloop back at default
     factsettings = true;                    //device in factory settings
-    bleKeyboard.rstFactory();               //reset the factory settings flag
-    bleKeyboard.rstUpdate();                //reset the update flag
+    bleKeyboard.flgRstBUG(false);               //reset the factory settings flag
+    bleKeyboard.flgRstTimer(false);                //reset the update flag
     bleKeyboard.setColour(&KeyFact[n][1]);  //reset the LED colour to factory settings
   }
 
@@ -111,6 +112,9 @@ void loop() {
   //if the button is pressed for less than 3 seconds the button will cycle through the factory keys
   if( pressDuration < ShortPress && pressDuration > 0 && factsettings && (millis() - recentPress) > 500) {
     n = n+1;
+    if(keys[n,0]==NULL) {
+      n++;
+    }
     pressDuration = 0;
     TimeReleased = 0;
     TimePressed = 0;
@@ -140,7 +144,7 @@ void loop() {
     pressDuration = 0;
     TimeReleased = 0;
     TimePressed = 0;
-    bleKeyboard.setColour(&KeyFact[n][1]);    //set the colour to factory settings
+    bleKeyboard.setColour(&factColour);    //set the colour to factory settings
     confUpdate = true;
     factsettings = true;
   }
@@ -149,8 +153,8 @@ void loop() {
 
   //Factory setting library updates///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if (factsettings) {
-    bleKeyboard.setKey(&KeyFact[n][0]);     //set the key to factory settings
-    bleKeyboard.setLayout(&KeyFact[n][4]);  //set the LED layout to factory settings
+    bleKeyboard.setKeybind(&Keys[n][0]);     //set the key to factory settings
+    bleKeyboard.setLayout(&Keys[n][1]);  //set the LED layout to factory settings
   }
 
 
@@ -166,13 +170,13 @@ void loop() {
   }
 
   //LED updates/bluetooth connectivity///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  if (bleKeyboard.isConnected() && (*bleKeyboard.isUpdated()||confUpdate||startup) ) {
+  if (bleKeyboard.isConnected() && (*bleKeyboard.flgRstTimer()||confUpdate||startup) ) {
     confUpdate = false;
     startup = false;
-    if (*bleKeyboard.isUpdated()) {
+    if (*bleKeyboard.flgRstTimer()) {
       timeDeepSleep = *bleKeyboard.getTimeout();
       TimeSleep = millis();       //reset sleep timing
-      bleKeyboard.rstUpdate();    //reset the update flag
+      bleKeyboard.flgRstTimer(false);    //reset the update flag
     }
     //Set neopixels according to LEDbin top = LEDbin[3], left = LEDbin[2], down = LEDbin[1], right = LEDbin[0]
     //neo pixels: top = 0, left = 1, down = 2, right = 3;
