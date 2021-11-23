@@ -153,8 +153,8 @@ void loop() {
 
   //Factory setting library updates///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if (factsettings) {
-    bleKeyboard.setKeybind(&Keys[n][0]);     //set the key to factory settings
-    bleKeyboard.setLayout(&Keys[n][1]);  //set the LED layout to factory settings
+    bleKeyboard.setKeybind(&&Keys[n][0]);     //set the key to factory settings
+    bleKeyboard.setLayout(&&Keys[n][1]);  //set the LED layout to factory settings
   }
 
 

@@ -33,6 +33,7 @@ int KeyFact[5][5] = {{arrowup, 0x22, 0xA0, 0xFF, 0x01},
 int LEDbin[] = {0,0,0,0};
 
 //Factory setting key+layout and colour arrays
+bool memKeys[5] = {1,1,1,1,1};
 int factColour[3] = {0x22, 0xA0, 0xFF};
 int factArrowup[2] = {218, 0x01};
 int factArrowleft[2] = {216, 0x02};

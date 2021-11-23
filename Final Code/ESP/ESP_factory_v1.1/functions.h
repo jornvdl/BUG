@@ -78,6 +78,11 @@ void MemoryStore(int n, int factsettings){
   preferences.putInt("key", *bleKeyboard.getKeybind());
   preferences.putInt("layout", *bleKeyboard.getLayout());
   preferences.putInt("timeout", *bleKeyboard.getTimeout());
+  preferences.putInt("Dup", *bleKeyboard.cirKeys());
+  preferences.putInt("Dleft", *(bleKeyboard.cirKeys()+1));
+  preferences.putInt("Ddown", *(bleKeyboard.cirKeys()+2));
+  preferences.putInt("Dright", *(bleKeyboard.cirKeys()+3));
+  preferences.putInt("Space", *(bleKeyboard.cirKeys()+4));
   preferences.putInt("factcount", n);
   preferences.putInt("factset", factsettings);
   preferences.end();
@@ -89,6 +94,11 @@ void MemoryPull(){
   colour_main[0] = preferences.getInt("cRed", 0x22);
   colour_main[1] = preferences.getInt("cGreen", 0xA0);
   colour_main[2] = preferences.getInt("cBlue", 0xFF);
+  memKeys[0] = preferences.getInt("Dup", 1);
+  memKeys[1] = preferences.getInt("Dleft", 1);
+  memKeys[2] = preferences.getInt("Ddown", 1);
+  memKeys[3] = preferences.getInt("Dright", 1);
+  memKeys[4] = preferences.getInt("Space", 1);
   layout_main = preferences.getInt("layout", 0x0F);
   timeDeepSleep = preferences.getInt("timeout", 300);
   n = preferences.getInt("factcount", 0);
@@ -105,7 +115,7 @@ void keyboard_initialise(){
   bleKeyboard.flgRstBUG(false);
   bleKeyboard.flgIdentify(false);
   bleKeyboard.flgWASD(false);
-  bleKeyboard.cirKeys(&keys[0]);
+  bleKeyboard.cirKeys(&memKeys[0]);
 }
 
 void BLEdisconnected(){
@@ -178,96 +188,96 @@ void keyArrayUpdate(){
   int k = 0;
   if (!bleKeyboard.flgWASD()) {
     if(keyCirc &1) {
-      keys[0,0] = &factArrowup;
-      keys[0,1] = &(factArrowup+1);
+      keys[0][0] = &factArrowup;
+      keys[0][1] = &(factArrowup+1);
       k++;
     }
     else {
-      keys[0,0] = &null;
-      keys[0,1] = &null;
+      keys[0][0] = &null;
+      keys[0][1] = &null;
     }
     if(keyCirc>>1 &1) {
-      keys[1,0] = &factArrowleft;
-      keys[1,1] = &(factArrowleft+1);
+      keys[1][0] = &factArrowleft;
+      keys[1][1] = &(factArrowleft+1);
       k++;
     }
     else {
-      keys[1,0] = &null;
-      keys[1,1] = &null;
+      keys[1][0] = &null;
+      keys[1][1] = &null;
     }
     if(keyCirc>>2 &1) {
-      keys[2,0] = &factArrowdown;
-      keys[2,1] = &(factArrowdown+1);
+      keys[2][0] = &factArrowdown;
+      keys[2][1] = &(factArrowdown+1);
       k++
     }
     else {
-      keys[2,0] = &null;
-      keys[2,1] = &null;
+      keys[2][0] = &null;
+      keys[2][1] = &null;
     }
     if(keyCirc>>3 &1) {
-      keys[3,0] = &factArrowright;
-      keys[3,1] = &(factArrowright+1);
+      keys[3][0] = &factArrowright;
+      keys[3][1] = &(factArrowright+1);
       k++;
     }
     else {
-      keys[3,0] = &null;
-      keys[3,1] = &null;
+      keys[3][0] = &null;
+      keys[3][1] = &null;
     }
     if(keyCirc>>4 &1) {
-      keys[4,0] = &space;
-      keys[4,1] = &(space+1);
+      keys[4][0] = &space;
+      keys[4][1] = &(space+1);
       k++;
     }
     else {
-      keys[4,0] = &null;
-      keys[4,1] = &null;
+      keys[4][0] = &null;
+      keys[4][1] = &null;
     }
   }
   if (bleKeyboard.flgWASD()) {
     if(keyCirc &1) {
-      keys[0,0] = &factW;
-      keys[0,1] = &(factW+1);
+      keys[0][0] = &factW;
+      keys[0][1] = &(factW+1);
       k++;
     }
     else {
-      keys[0,0] = &null;
-      keys[0,1] = &null;
+      keys[0][0] = &null;
+      keys[0][1]] = &null;
     }
     if(keyCirc>>1 &1) {
-      keys[1,0] = &factA;
-      keys[1,1] = &(factA+1);
+      keys[1][0] = &factA;
+      keys[1][1] = &(factA+1);
       k++;
     }
     else {
-      keys[1,0] = &null;
-      keys[1,1] = &null;
+      keys[1][0] = &null;
+      keys[1][1] = &null;
     }
     if(keyCirc>>2 &1) {
-      keys[2,0] = &factS;
-      keys[2,1] = &(factS+1);
+      keys[2][0] = &factS;
+      keys[2][1] = &(factS+1);
       k++;
     }
     else {
-      keys[2,0] = &null;
-      keys[2,1] = &null;
+      keys[2][0] = &null;
+      keys[2][1] = &null;
     }
     if(keyCirc>>3 &1) {
-      keys[3,0] = &factD;
-      keys[3,1] = &(factD+1);
+      keys[3][0] = &factD;
+      keys[3][1] = &(factD+1);
       k++;
     }
     else {
-      keys[3,0] = &null;
-      keys[3,1] = &null;
+      keys[3][0] = &null;
+      keys[3][1] = &null;
     }
     if(keyCirc>>4 &1) {
-      keys[4,0] = &space;
-      keys[4,1] = &(space+1);
+      keys[4][0] = &space;
+      keys[4][1] = &(space+1);
       k++;
     }
     else {
-      keys[4,0] = &null;
-      keys[4,1] = &null;
+      keys[4][0] = &null;
+      keys[4][1] = &null;
     }
   }
   if(k == 0){
