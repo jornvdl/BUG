@@ -220,7 +220,7 @@ void BleKeyboard::begin(void)
   );
   stateCharacteristic = pService->createCharacteristic(
 	  StateUUID,
-	  BLECharacteristic::PROPERTY_WRITE
+	  BLECharacteristic::PROPERTY_WRITE |
 	  BLECharacteristic::PROPERTY_READ |
 	  BLECharacteristic::PROPERTY_NOTIFY
   );
@@ -747,11 +747,11 @@ void BleKeyboard::flgRstTimer(bool flg) {
 
 // Share and reset factory flag
 bool* BleKeyboard::flgRstBUG() {
-	return &flgRstBUG;
+	return &rstBUG;
 }
 
 void BleKeyboard::flgRstBUG(bool flg) {
-	flgRstBUG = flg;
+	rstBUG = flg;
 
 	int written = rstBUG * 128 + identify * 64 + wasd * 32 + keys[4] * 16 + keys[0] * 8 + keys[1] * 4 + keys[2] * 2 + keys[1];
   stateCharacteristic->setValue(written);
@@ -759,11 +759,11 @@ void BleKeyboard::flgRstBUG(bool flg) {
 
 // Share mode flags
 bool* BleKeyboard::flgIdentify() {
-	return &flgIdentify;
+	return &identify;
 }
 
 void BleKeyboard::flgIdentify(bool flg) {
-	flgIdentify = flg;
+	identify = flg;
 
 	int written = rstBUG * 128 + identify * 64 + wasd * 32 + keys[4] * 16 + keys[0] * 8 + keys[1] * 4 + keys[2] * 2 + keys[1];
   stateCharacteristic->setValue(written);
