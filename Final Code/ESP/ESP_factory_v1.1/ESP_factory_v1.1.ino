@@ -12,6 +12,8 @@
 #include <Adafruit_NeoPixel.h>
 #include <Preferences.h>
 
+#define debug 1
+
 //Set the BUG name
 BleKeyboard bleKeyboard("BUGsy");
 //Set the memory system as preferences
@@ -24,7 +26,7 @@ Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(115200);
+  if (debug) Serial.begin(115200);
   //start the Neopixels and BleKeyboard
   bleKeyboard.begin();
   pixels.begin();
@@ -84,6 +86,7 @@ void loop() {
 
   //Configuration button Behavior/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if(LastConfState == LOW && digitalRead(confPin) == HIGH) {       // button is pressed
+    if (debug) Serial.println("Conf button is pressed!");
     TimePressed = millis();     //start conf button press duration timer
     TimeSleep = millis();       //reset the sleep timer
     LastConfState = HIGH;       //set last conf state to HIGH
@@ -92,17 +95,20 @@ void loop() {
   if(LastConfState == HIGH && digitalRead(confPin) == HIGH) {  //While the conf button is pressed 
     //Turn off pixel to indicate that if the button is released at that time the BUG will go into deep sleep
     while((millis() - TimePressed) > SleepPress && (millis() - TimePressed) < LongPress && digitalRead(confPin) == HIGH) {
+      if (debug) Serial.println("Confbtn > 3s!");
       LEDsoff();            //turn off the LEDs
       LastConfState = HIGH; 
     }
     //Have all the pixels blink to indicate the gamepad will reset to factory setting if the button is released
     if((millis() - TimePressed) > LongPress) {
+      if (debug) Serial.println("Confbtn > 7s!");
       LEDsBlink();          //blink the pixels
       LastConfState = HIGH;
     }
   }
 
   if(LastConfState == HIGH && digitalRead(confPin) == LOW) { // button is released
+    if (debug) Serial.println("Conf button is released!");
     TimeReleased = millis();    //store the button release time
     LastConfState = LOW;        //set the last conf state to LOW
   }
@@ -111,18 +117,23 @@ void loop() {
 
   //if the button is pressed for less than 3 seconds the button will cycle through the factory keys
   if( pressDuration < ShortPress && pressDuration > 0 && factsettings && (millis() - recentPress) > 500) {
-    n = n+1;
-    if(keys[n,0]==NULL) {
+    n++;
+    if(n > 4) n=0;
+    if (debug) Serial.print("New n value (before null-check). n=");
+    if (debug) Serial.println(n);
+    while(Keys[n] == NULL) {
+      if (debug) Serial.print("Keys[n] == NULL! (Inside new n value!) n=");
+      if (debug) Serial.println(n);
       n++;
+      if(n > 4) n=0;
     }
+    if (debug) Serial.print("New n value (after null-check).  n=");
+    if (debug) Serial.println(n);
     pressDuration = 0;
     TimeReleased = 0;
     TimePressed = 0;
     confUpdate = true;
     recentPress = millis();     //store the press time for debouncing
-    if(n > 4) {
-      n = 0;
-    }  
   }
 
   //check if the conf button was pressed more than 0.5 seconds ago to ensure it is a new press
@@ -144,7 +155,7 @@ void loop() {
     pressDuration = 0;
     TimeReleased = 0;
     TimePressed = 0;
-    bleKeyboard.setColour(&factColour);    //set the colour to factory settings
+    bleKeyboard.setColour(&factColour[0]);    //set the colour to factory settings
     confUpdate = true;
     factsettings = true;
   }
@@ -153,19 +164,22 @@ void loop() {
 
   //Factory setting library updates///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if (factsettings) {
-    bleKeyboard.setKeybind(&&Keys[n][0]);     //set the key to factory settings
-    bleKeyboard.setLayout(&&Keys[n][1]);  //set the LED layout to factory settings
+    while(Keys[n] == NULL) n++;
+    bleKeyboard.setKeybind(Keys[n]);     //set the key to factory settings
+    bleKeyboard.setLayout(Keys[n]+1);  //set the LED layout to factory settings
   }
 
 
   //The Button press/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if (digitalRead(buttonPin) == HIGH && LastState == LOW) {
     bleKeyboard.press();    //continuously send a spacebar when button is pressed
+    if (debug) Serial.println("The button is pressed!");
     LastState = HIGH;       //set last state to high
     TimeSleep = millis();   //reset the sleep timer
   }
   if (digitalRead(buttonPin) == LOW && LastState == HIGH) {
     bleKeyboard.releaseAll();  //stop sending the spacebar when the button is released
+    if (debug) Serial.println("The button is pressed!");
     LastState = LOW;           //set the last buttonstate to LOW
   }
 

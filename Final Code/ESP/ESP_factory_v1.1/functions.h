@@ -78,10 +78,10 @@ void MemoryStore(int n, int factsettings){
   preferences.putInt("key", *bleKeyboard.getKeybind());
   preferences.putInt("layout", *bleKeyboard.getLayout());
   preferences.putInt("timeout", *bleKeyboard.getTimeout());
-  preferences.putInt("Dup", *bleKeyboard.cirKeys());
-  preferences.putInt("Dleft", *(bleKeyboard.cirKeys()+1));
-  preferences.putInt("Ddown", *(bleKeyboard.cirKeys()+2));
-  preferences.putInt("Dright", *(bleKeyboard.cirKeys()+3));
+  preferences.putInt("dUp", *bleKeyboard.cirKeys());
+  preferences.putInt("dLeft", *(bleKeyboard.cirKeys()+1));
+  preferences.putInt("dDown", *(bleKeyboard.cirKeys()+2));
+  preferences.putInt("dRight", *(bleKeyboard.cirKeys()+3));
   preferences.putInt("Space", *(bleKeyboard.cirKeys()+4));
   preferences.putInt("factcount", n);
   preferences.putInt("factset", factsettings);
@@ -184,104 +184,94 @@ void Batterypercentage(){
 }
 
 void keyArrayUpdate(){
-  int keyCirc = *bleKeyboard.cirKeys();
+  bool* keyCirc = bleKeyboard.cirKeys();
   int k = 0;
   if (!bleKeyboard.flgWASD()) {
-    if(keyCirc &1) {
-      keys[0][0] = &factArrowup;
-      keys[0][1] = &(factArrowup+1);
+    if(*(keyCirc) &1) {
+      Keys[0] = &factArrowup[0];
+//      if (debug) Serial.println("Key = arrow up");
       k++;
     }
     else {
-      keys[0][0] = &null;
-      keys[0][1] = &null;
+      Keys[0] = NULL;
     }
-    if(keyCirc>>1 &1) {
-      keys[1][0] = &factArrowleft;
-      keys[1][1] = &(factArrowleft+1);
+    if(*(keyCirc+1) &1) {
+      Keys[1] = &factArrowleft[0];
+//      if (debug) Serial.println("Key = arrow left");
       k++;
     }
     else {
-      keys[1][0] = &null;
-      keys[1][1] = &null;
+      Keys[1] = NULL;
     }
-    if(keyCirc>>2 &1) {
-      keys[2][0] = &factArrowdown;
-      keys[2][1] = &(factArrowdown+1);
-      k++
-    }
-    else {
-      keys[2][0] = &null;
-      keys[2][1] = &null;
-    }
-    if(keyCirc>>3 &1) {
-      keys[3][0] = &factArrowright;
-      keys[3][1] = &(factArrowright+1);
+    if(*(keyCirc+2) &1) {
+      Keys[2] = &factArrowdown[0];
+//      if (debug) Serial.println("Key = arrow down");
       k++;
     }
     else {
-      keys[3][0] = &null;
-      keys[3][1] = &null;
+      Keys[2] = NULL;
     }
-    if(keyCirc>>4 &1) {
-      keys[4][0] = &space;
-      keys[4][1] = &(space+1);
+    if(*(keyCirc+3) &1) {
+      Keys[3] = &factArrowright[0];
+      if (debug) Serial.println("Key = arrow right");
       k++;
     }
     else {
-      keys[4][0] = &null;
-      keys[4][1] = &null;
+      Keys[3] = NULL;
+    }
+    if(*(keyCirc+4) &1) {
+      Keys[4] = &factSpace[0];
+//      if (debug) Serial.println("Key = space");
+      k++;
+    }
+    else {
+      Keys[4] = NULL;
     }
   }
   if (bleKeyboard.flgWASD()) {
-    if(keyCirc &1) {
-      keys[0][0] = &factW;
-      keys[0][1] = &(factW+1);
+    if(*(keyCirc) &1) {
+      Keys[0] = &factW[0];
+//      if (debug) Serial.println("Key = W");
       k++;
     }
     else {
-      keys[0][0] = &null;
-      keys[0][1]] = &null;
+      Keys[0] = NULL;
     }
-    if(keyCirc>>1 &1) {
-      keys[1][0] = &factA;
-      keys[1][1] = &(factA+1);
+    if(*(keyCirc+1) &1) {
+      Keys[1] = &factA[0];
+//      if (debug) Serial.println("Key = A");
       k++;
     }
     else {
-      keys[1][0] = &null;
-      keys[1][1] = &null;
+      Keys[1] = NULL;
     }
-    if(keyCirc>>2 &1) {
-      keys[2][0] = &factS;
-      keys[2][1] = &(factS+1);
+    if(*(keyCirc+2) &1) {
+      Keys[2] = &factS[0];
+//      if (debug) Serial.println("Key = S");
       k++;
     }
     else {
-      keys[2][0] = &null;
-      keys[2][1] = &null;
+      Keys[2] = NULL;
     }
-    if(keyCirc>>3 &1) {
-      keys[3][0] = &factD;
-      keys[3][1] = &(factD+1);
+    if(*(keyCirc+3) &1) {
+      Keys[3] = &factD[0];
+//      if (debug) Serial.println("Key = D");
       k++;
     }
     else {
-      keys[3][0] = &null;
-      keys[3][1] = &null;
+      Keys[3] = NULL;
     }
-    if(keyCirc>>4 &1) {
-      keys[4][0] = &space;
-      keys[4][1] = &(space+1);
+    if(*(keyCirc+4) &1) {
+      Keys[4] = &factSpace[0];
+//      if (debug) Serial.println("Key = space");
       k++;
     }
     else {
-      keys[4][0] = &null;
-      keys[4][1] = &null;
+      Keys[4] = NULL;
     }
-  }
   if(k == 0){
     customKey = true;
+  }
   }
 }
 

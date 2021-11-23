@@ -44,7 +44,6 @@ int factW[2] = {119,0x01};
 int factA[2] = {97,0x02};
 int factS[2] = {115,0x04};
 int factD[2] = {100,0x08};
-int *null = NULL;
 
 //initilisation for buttonpress timings and debounce of the configuration button
 const int ShortPress = 3000; //short press shorter than 3000 milliseconds
@@ -62,7 +61,7 @@ int layout_main = 0x0E;
 int timeDeepSleep = 300;
 int n = 0; 
 int m = 0;
-int keys[5][2] = {{0,0},{0,0},{0,0},{0,0},{0,0}};
+int* Keys[5] = {0,0,0,0,0};
 
 
 unsigned long TimePressed = 0;
