@@ -37,10 +37,9 @@ const int factConf      = 0;                    // Start value of confSelect. Ra
 #define keyS          115
 #define keyD          100
 #define keySpace      32
+
 const int keyArrows[5]  = {keyUp, keyLeft, keyDown, keyRight, keySpace};
 const int keyWASD[5]    = {keyW,  keyA,    keyS,    keyD,     keySpace};
 const int keyLayout[5]  = {0x01,  0x02,    0x04,    0x08,     0xE};
-
-// 
 
 #endif // _VARIABLES_H
