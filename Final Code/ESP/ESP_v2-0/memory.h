@@ -19,7 +19,14 @@ void memory2lib() {
   int memSleep;
     
   memory.begin("bug_data",true);
-  memKey        = memory.getInt("key",    keyArrows[factConf] );
+
+  // Select proper factory settings for first init
+  if (!factWASD) {
+    memKey      = memory.getInt("key",    keyArrows[factConf] );
+  } else {
+    memKey      = memory.getInt("key",    keyWASD[factConf]   );
+  }
+
   memColour[0]  = memory.getInt("cRed",   factColour[0]       );
   memColour[1]  = memory.getInt("cGreen", factColour[1]       );
   memColour[2]  = memory.getInt("cBlue",  factColour[2]       );
