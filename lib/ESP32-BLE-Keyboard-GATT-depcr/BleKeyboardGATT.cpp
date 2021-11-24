@@ -1,12 +1,3 @@
-// Updated BLEKeyboard library base to 0.3.1 (1 oct 2021)
-// Updated Custom part on 24 nov 2021
-// ESP32-BLE-Keyboard used as base library, written by T-vK
-//			https://github.com/T-vK/ESP32-BLE-Keyboard
-//
-// Added custom GATT profiles and editted library to use with BUG: Bluetooth Ultrasimple Gamepad
-// Editten by Jorn van der Linden
-
-
 #if defined(USE_NIMBLE)
 #include <NimBLEDevice.h>
 #include <NimBLEServer.h>
@@ -61,7 +52,6 @@ class keyCallbacks: public BLECharacteristicCallbacks {
       keystroke = *data;
    		rstTimer = true;
       keyCharacteristic->setValue(keystroke);
-      //keyCharacteristic->notify(true); // Something like this to notify, test later.
     }
   }
 };
@@ -254,17 +244,8 @@ void BleKeyboard::begin(void)
 
   hid->manufacturer()->setValue(deviceManufacturer);
 
-  hid->pnp(0x02, vid, pid, version);
+  hid->pnp(0x02, 0xe502, 0xa111, 0x0210);
   hid->hidInfo(0x00, 0x01);
-
-  //#if defined(USE_NIMBLE)
-  //	BLEDevice::setSecurityAuth(true,true,true);
- // #else
-  	BLESecurity* pSecurity = new BLESecurity();
-  	//pSecurity->setAuthenticationMode(ESP_LE_AUTH_REQ_SC_MITM_BOND);
-    pSecurity->setAuthenticationMode(ESP_LE_AUTH_BOND);
-  //#endif // USE_NIMBLE
-
 
   ////////////////////////////////////////////////////////////////////////////////////////
   // Below is added a new part: creating a custom GATT service next to the HID protocol //
@@ -280,7 +261,9 @@ void BleKeyboard::begin(void)
   // Above is the newly added part. //////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////
 
+  BLESecurity* pSecurity = new BLESecurity();
 
+  pSecurity->setAuthenticationMode(ESP_LE_AUTH_BOND);
 
   hid->reportMap((uint8_t*)_hidReportDescriptor, sizeof(_hidReportDescriptor));
   hid->startServices();
@@ -350,18 +333,6 @@ void BleKeyboard::sendReport(MediaKeyReport* keys)
     this->delay_ms(_delay_ms);
 #endif // USE_NIMBLE
   }	
-}
-
-void BleKeyboard::set_vendor_id(uint16_t vid) {
-	this->vid = vid;
-}
-
-void BleKeyboard::set_product_id(uint16_t pid) {
-	this->pid = pid;
-}
-
-void BleKeyboard::set_version(uint16_t version) {
-	this->version = version;
 }
 
 extern
@@ -697,29 +668,13 @@ size_t BleKeyboard::write(const uint8_t *buffer, size_t size) {
 
 void BleKeyboard::onConnect(BLEServer* pServer) {
   this->connected = true;
-
-  #if !defined(USE_NIMBLE)
-
-  	BLE2902* desc = (BLE2902*)this->inputKeyboard->getDescriptorByUUID(BLEUUID((uint16_t)0x2902));
-  	desc->setNotifications(true);
-  	desc = (BLE2902*)this->inputMediaKeys->getDescriptorByUUID(BLEUUID((uint16_t)0x2902));
-  	desc->setNotifications(true);
-
-  #endif //!USE_NIMBLE
 }
 
 void BleKeyboard::onDisconnect(BLEServer* pServer) {
   this->connected = false;
-
-	#if !defined(USE_NIMBLE)
-	  BLE2902* desc = (BLE2902*)this->inputKeyboard->getDescriptorByUUID(BLEUUID((uint16_t)0x2902));
-	  desc->setNotifications(false);
-	  desc = (BLE2902*)this->inputMediaKeys->getDescriptorByUUID(BLEUUID((uint16_t)0x2902));
-	  desc->setNotifications(false);
-
-	  advertising->start();
-
-	#endif  // !USE_NIMBLE
+#if !defined(USE_NIMBLE)
+  advertising->start();
+#endif  // !USE_NIMBLE
 }
 
 void BleKeyboard::onWrite(BLECharacteristic* me) {
