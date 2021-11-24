@@ -3,7 +3,7 @@
 #include "memory.h"
 
 void shutdown(int n, int factsettings){
-  Ledsoff();                  //Turn Leds off
+  ledsOff();                  //Turn Leds off
   digitalWrite(rdyPin,LOW);   //Set the readyPin low
   lib2memory();               //Memory storage
   esp_deep_sleep_start();     //Set the ESP to deep sleep

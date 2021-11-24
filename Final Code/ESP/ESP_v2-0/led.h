@@ -17,6 +17,7 @@ void ledShow() {
   //Set neopixles according to ledBin top = ledBin[3], left = ledBin[2], down = ledBin[1], right = ledBin[0]
   //neo pixels: top = 0, left = 1, down = 2, right = 3;
   bool ledBin[4] = {0,0,0,0};
+  
   ledBin[0] = *layout_hextobin();
   ledBin[1] = *(layout_hextobin()+1);
   ledBin[2] = *(layout_hextobin()+2);
@@ -40,12 +41,12 @@ void ledShow() {
 }
 
 
-void LEDsoff() {
+void ledsOff() {
   leds.clear();
   leds.show();
 }
 
-void LEDsBlink() {
+void ledsBlink() {
   int* ptrColour = bleKeyboard.getColour(); 
   long ledColour = leds.Color(*ptrColour,*(ptrColour+1),*(ptrColour+2));
   leds.fill(ledColour,0,numLeds);
@@ -56,7 +57,7 @@ void LEDsBlink() {
   delay(500);
 }
 
-void BLEdisconnected(){
+void bleDisconnected(){
   //Set neopixels according to LEDbin top = LEDbin[3], left = LEDbin[2], down = LEDbin[1], right = LEDbin[0]
   //neopixels: top = 0, left = 1, down = 2, right = 3; 
   int blinktimeoff;
