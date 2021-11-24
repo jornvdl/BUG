@@ -6,6 +6,7 @@
 #define debug 1       // Set to 1 to enable serial debug information. Baudrate = 115200
 
 #include <BleKeyboard.h>
+#include <Adafruit_NeoPixel.h>
 
 // Import custom libraries
 #include "variables.h"
@@ -16,12 +17,6 @@
 #include "btn.h"
 #include "shutdown.h"
 #include "conf.h"
-
-
-
-// Move next two lines to led.h
-#include <Adafruit_NeoPixel.h>
-Adafruit_NeoPixel leds(numLeds, ledPin, NEO_GRB + NEO_KHZ800);
 
 
 

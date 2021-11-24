@@ -7,14 +7,12 @@
 
 #include "memory.h"
 
-BleKeyboard bleKeyboard(deviceName, manufacturer);
-
-
 
 void initSystem() {
   // Enable debug output over serial
   if (debug) Serial.begin(115200);
 
+  // Start BLE Keyboard server and LED controller
   bleKeyboard.begin();
   leds.begin();
 
@@ -25,7 +23,7 @@ void initSystem() {
   pinMode(rdyPin,  OUTPUT);
 
   // Get data from memory and set to library
-  memory2lib();
+  memory2lib();   
 
   // Start sleeptimer
 
