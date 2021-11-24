@@ -14,28 +14,72 @@ int * layout_hextobin(){
 
 
 void ledShow() {
-  //Set neopixels according to ledBin top = ledBin[3], left = ledBin[2], down = ledBin[1], right = ledBin[0]
-  //neo pixels: top = 0, left = 1, down = 2, right = 3;
+  //Set neoleds according to ledBin top = ledBin[3], left = ledBin[2], down = ledBin[1], right = ledBin[0]
+  //neo leds: top = 0, left = 1, down = 2, right = 3;
   bool ledBin[4] = {0,0,0,0};
   ledBin[0] = *layout_hextobin();
   ledBin[1] = *(layout_hextobin()+1);
   ledBin[2] = *(layout_hextobin()+2);
   ledBin[3] = *(layout_hextobin()+3);     
+  
   int* ptrColour = bleKeyboard.getColour(); 
-  long ledColour = pixels.Color(*ptrColour,*(ptrColour+1),*(ptrColour+2));
+  long ledColour = leds.Color(*ptrColour,*(ptrColour+1),*(ptrColour+2));
+  
   for(int i = 0, i < 4, i++){
     if (ledBin[i]) {
-      pixels.setpixelColor((3-i), ledColour);
+      leds.setpixelColor((3-i), ledColour);
     }
     else {
-      pixels.setpixelColor((3-i), pixels.Color(0,0,0));
+      leds.setpixelColor((3-i), leds.Color(0,0,0));
     }
-    pixels.show();
+    leds.show();
   }
 
   if (debug) Serial.println("LEDs updated");
-  
+
 }
 
+
+void LEDsoff() {
+  leds.clear();
+  leds.show();
+}
+
+void LEDsBlink() {
+  int* ptrColour = bleKeyboard.getColour(); 
+  long ledColour = leds.Color(*ptrColour,*(ptrColour+1),*(ptrColour+2));
+  pixels.fill(ledColour,0,numLeds);
+  pixels.show();
+  delay(500);
+  pixels.clear();
+  pixels.show();
+  delay(500);
+}
+
+void BLEdisconnected(){
+  //Set neopixels according to LEDbin top = LEDbin[3], left = LEDbin[2], down = LEDbin[1], right = LEDbin[0]
+  //neo pixels: top = 0, left = 1, down = 2, right = 3; 
+  long blue = leds.Color(0,0,255);
+  long off  = leds.Color(0,0,0);
+  if (millis() - blinktimeoff > 300 && millis() - blinktimeon > 600) {
+    
+    for(int i = 0, i < 4, i++){
+      if (*(layout_hextobin()+i)) {
+        leds.setpixelColor((3-i), ledColour);
+      }
+      else {
+      leds.setpixelColor((3-i), leds.Color(0,0,0));
+      }
+    leds.show();
+    }
+    blinktimeon = millis();
+   
+  }
+  else if (millis() - blinktimeon > 300 && millis() - blinktimeoff > 600) {
+    LEDsoff();
+    blinktimeoff = millis();
+  }
+    
+}
 
 #endif // _LED_H
