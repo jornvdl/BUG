@@ -14,8 +14,8 @@ int * layout_hextobin(){
 
 
 void ledShow() {
-  //Set neoleds according to ledBin top = ledBin[3], left = ledBin[2], down = ledBin[1], right = ledBin[0]
-  //neo leds: top = 0, left = 1, down = 2, right = 3;
+  //Set neopixles according to ledBin top = ledBin[3], left = ledBin[2], down = ledBin[1], right = ledBin[0]
+  //neo pixels: top = 0, left = 1, down = 2, right = 3;
   bool ledBin[4] = {0,0,0,0};
   ledBin[0] = *layout_hextobin();
   ledBin[1] = *(layout_hextobin()+1);
@@ -48,17 +48,19 @@ void LEDsoff() {
 void LEDsBlink() {
   int* ptrColour = bleKeyboard.getColour(); 
   long ledColour = leds.Color(*ptrColour,*(ptrColour+1),*(ptrColour+2));
-  pixels.fill(ledColour,0,numLeds);
-  pixels.show();
+  leds.fill(ledColour,0,numLeds);
+  leds.show();
   delay(500);
-  pixels.clear();
-  pixels.show();
+  leds.clear();
+  leds.show();
   delay(500);
 }
 
 void BLEdisconnected(){
   //Set neopixels according to LEDbin top = LEDbin[3], left = LEDbin[2], down = LEDbin[1], right = LEDbin[0]
-  //neo pixels: top = 0, left = 1, down = 2, right = 3; 
+  //neopixels: top = 0, left = 1, down = 2, right = 3; 
+  int blinktimeoff;
+  int blinktimeon;
   long blue = leds.Color(0,0,255);
   long off  = leds.Color(0,0,0);
   if (millis() - blinktimeoff > 300 && millis() - blinktimeon > 600) {
