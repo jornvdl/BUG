@@ -2,7 +2,7 @@
 #define _SHUTDOWN_H
 #include "memory.h"
 
-void shutdown(int n, int factsettings){
+void shutdown(){
   ledsOff();                  //Turn Leds off
   digitalWrite(rdyPin,LOW);   //Set the readyPin low
   lib2memory();               //Memory storage
