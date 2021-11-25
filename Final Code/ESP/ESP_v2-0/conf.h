@@ -11,58 +11,51 @@ bool modeSelect() {
   }
 }
 
-void confRelease(int pressTime){
+void confRelease(int pressTime) {
   if (debug) Serial.println("conf:released");
   int releaseTime = millis();
   int durationTime = releaseTime - pressTime;
   bool* ptrMode = bleKeyboard.cirKeys();
 
-  if (debug) {
-    Serial.print("DEBUG: ptrMode: [");
-    for (i=0; i<5; i++) {
-      Serial.print(*(ptrMode+i));
-      Serial.print(",");
-    }
-    Serial.println("]")
-  }
+  if((durationTime < shutdownTime) && modeSelect()) {
+    if (debug) {Serial.println("conf:next key");
+    confSelect++;
+    if(confSelect > 4) confSelect = 0;
 
-  while(millis() - releaseTime < debounceTime) {
-    if((durationTime < shutdownTime) && modeSelect()) {
-      if (debug) Serial.println("conf:next key");
+
+    while (!*(ptrMode + confSelect)) {
       confSelect++;
-      if(confSelect > 4) confSelect = 0;
-      while (!*(ptrMode + confSelect)) {
-        confSelect++;
-        if(confSelect > 4) confSelect = 0;  
-      }
-      //Write new values to library
-      if (factWASD) {
-        bleKeyboard.setKeybind  ( &keyWASD[confSelect]    );  
-      }
-      else {
-        bleKeyboard.setKeybind  ( &keyArrows[confSelect]  );  
-      }
-      bleKeyboard.setLayout     ( &keyLayout[confSelect]  );
-      //Update LEDs
-      ledsOn();
+      if(confSelect > 4) confSelect = 0;  
+    }
+    
+    //Write new values to library
+    if (factWASD) {
+      bleKeyboard.setKeybind  ( &keyWASD[confSelect]    );  
+    }
+    else {
+      bleKeyboard.setKeybind  ( &keyArrows[confSelect]  );  
+    }
+    bleKeyboard.setLayout     ( &keyLayout[confSelect]  );
+    //Update LEDs
+    ledsOn();
 
-    }
-    else if(durationTime > shutdownTime && durationTime < factoryTime) {
-      if (debug) Serial.println("conf:shutdown");
-      shutdown();
-    }
-    else if(durationTime > factoryTime) {
-      if (debug) Serial.println("conf:factory");
-      factory();
-    }
   }
+  else if(durationTime > shutdownTime && durationTime < factoryTime) {
+    if (debug) Serial.println("conf:shutdown");
+    shutdown();
+  }
+  else if(durationTime > factoryTime) {
+    if (debug) Serial.println("conf:factory");
+    factory();
+  }
+  
 }
 
 void confPress(){
   if (debug) Serial.println("conf:pressed");
   int confTimer = millis();
-  while(digitalRead(confPin)) {
-    while((millis() - confTimer) > shutdownTime && (millis()- confTimer) < factoryTime) {
+  while(digitalRead(confPin) || (millis()-confTimer) < debounceTime) {
+    if ((millis() - confTimer) > shutdownTime && (millis()- confTimer) < factoryTime) {
       ledsOff();
     }
     if ((millis() - confTimer) > factoryTime) {
