@@ -46,7 +46,7 @@ const int keyLayout[5]  = {0x01,  0x02,    0x04,    0x08,     0xE};
 
 ////////////////////////////// Global variables //////////////////////////////
 // Classes from libraries
-BleKeyboard bleKeyboard(deviceName, manufacturer);
+BleKeyboard       bleKeyboard(deviceName, manufacturer);
 Adafruit_NeoPixel leds(numLeds, ledPin, NEO_GRB + NEO_KHZ800);
 
 // Mode select
