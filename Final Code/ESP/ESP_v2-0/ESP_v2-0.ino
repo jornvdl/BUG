@@ -86,7 +86,7 @@ void loop() {
       }
 
       // Shutdown if to long inactivity
-      int timeLived = millis() - sleepTimer;
+      int timeLived = millis()/1000 - sleepTimer;
       if (timeLived > *bleKeyboard.getTimeout()) {
         if (debug) Serial.println("Sleeptimer exceeded!");
         shutdown();
