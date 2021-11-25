@@ -10,7 +10,7 @@ void confPress(){
       ledsOff();
     }
     if ((millis() - confTimer) > factoryTime) {
-      ledsBlink();
+      ledsBlink(true, false);
     }
   }
   confRelease(confTimer);

@@ -13,6 +13,7 @@ void factory() {
   bleKeyboard.setLayout  ( &keyLayout[factConf] ); 
   
   bleKeyboard.flgRstBUG(false);
+  bleKeyboard.flgIdentify(false);
 }
 
 

@@ -27,7 +27,7 @@ void initSystem() {
   memory2lib();   
   if (debug) Serial.println("Memory read and written to lib.");
 
-  // Start sleeptimer
+  bleKeyboard.flgIdentify(false);
 
   digitalWrite(rdyPin, HIGH);
 }

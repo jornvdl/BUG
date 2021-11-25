@@ -28,7 +28,7 @@ void setup() {
 //  in this function, the main loop is implemented.
 void loop() {
   if (bleKeyboard.isConnected()) {
-    ledOn();                // Enable LEDs
+    ledsOn();                // Enable LEDs
     sleepTimer = millis();  // Reset sleeptimer
 
     while(bleKeyboard.isConnected()) {
@@ -48,7 +48,7 @@ void loop() {
       if (*bleKeyboard.flgRstTimer()) {
         if (debug) Serial.println("Sleeptimer reset requested from library");
         sleepTimer = millis();
-        ledOn();
+        ledsOn();
         bleKeyboard.flgRstTimer(false);
       }
 
@@ -56,6 +56,11 @@ void loop() {
       if (*bleKeyboard.flgRstBUG()) {
         if (debug) Serial.println("Reset BUG from BLE flag.");
         factory();
+      }
+
+      // Identify BUG
+      if (*bleKeyboard.flgIdentify()) {
+        ledsBlink(true, false);
       }
 
       // Shutdown if to long inactivity
@@ -68,9 +73,11 @@ void loop() {
   } 
 
   else { // !bleKeyboard.isConnected()
-    bleDisconnected();
 
     while(!bleKeyboard.isConnected()) {
+      // Let the LEDs blink
+      ledsBlink(false, true);
+
       // React to a configuration press
       if (digitalRead(confPin)) {
         sleepTimer = millis();

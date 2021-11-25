@@ -1,7 +1,7 @@
 #ifndef _LED_H
 #define _LED_H
 
-int * layout_hextobin(){
+int* layout_hextobin(){
   static int binTemp[]   = {0,0,0,0};
          int layout_main = *bleKeyboard.getLayout();
 
@@ -10,14 +10,13 @@ int * layout_hextobin(){
   binTemp[1] = (layout_main>>2 &1);
   binTemp[0] = (layout_main>>3 &1);
 
-  return binTemp;
-  
   if (debug) Serial.println("Layout hextobin");
 
+  return binTemp;
 }
 
 
-void ledOn() {
+void ledsOn() {
   //Set neopixles according to ledBin top = ledBin[3], left = ledBin[2], down = ledBin[1], right = ledBin[0]
   //neo pixels: top = 0, left = 1, down = 2, right = 3;
   bool ledBin[4] = {0,0,0,0};
@@ -48,51 +47,33 @@ void ledOn() {
 void ledsOff() {
   leds.clear();
   leds.show();
-
   if (debug) Serial.println("LEDs off");
 
 }
 
-void ledsBlink() {
-  int* ptrColour = bleKeyboard.getColour(); 
-  long ledColour = leds.Color(*ptrColour,*(ptrColour+1),*(ptrColour+2));
-  leds.fill(ledColour,0,numLeds);
-  leds.show();
-  delay(500);
-  leds.clear();
-  leds.show();
-  delay(500);
+void ledsBlink(bool keepColour, bool keepLayout) {
+  if (keepColour) {
+    int* ptrColour = bleKeyboard.getColour();
+    long ledColour = leds.Color(*ptrColour, *(ptrColour+1), +(ptrColour+2));
+  } 
+  else { // If not using current colour, then select blinkColour set in variables.
+    long ledColour = leds.Color(blinkColour[0], blinkColour[1], blinkColour[2]);
+  }
 
-  if (debug) Serial.println("LEDs blink");
-
-}
-
-void bleDisconnected(){
-  //Set neopixels according to LEDbin top = LEDbin[3], left = LEDbin[2], down = LEDbin[1], right = LEDbin[0]
-  //neopixels: top = 0, left = 1, down = 2, right = 3; 
-  int blinktimeoff;
-  int blinktimeon;
-  long blue = leds.Color(0,0,255);
-  long off  = leds.Color(0,0,0);
-  if (millis() - blinktimeoff > 300 && millis() - blinktimeon > 600) {
-    
-    for(int i = 0; i < 4; i++){
-      if (*(layout_hextobin()+i)) {
-        leds.setPixelColor((3-i), blue);
-      }
-      else {
-      leds.setPixelColor((3-i), leds.Color(0,0,0));
-      }
-    leds.show();
+  // Determine if LEDs should be on or off
+  int ledPeriod = millis() % (blinkTime * 2);
+  bool ledEnabled = ledPeriod > blinkTime;
+  
+   // Set LEDs
+  for(int i = 0; i < 4; i++) {
+    if( (*(layout_hextobin()+i) || !keepLayout) && ledEnabled) {
+      leds.setPixelColor((3-i), ledColour);
     }
-    blinktimeon = millis();
-   
+    else {
+      leds.setPixelColor((3-i), leds.Color(0,0,0));
+    }
   }
-  else if (millis() - blinktimeon > 300 && millis() - blinktimeoff > 600) {
-    ledsOff();
-    blinktimeoff = millis();
-  }
-  if (debug) Serial.println("LEDs BLE disconnect");
+  leds.show();
 }
 
 #endif // _LED_H

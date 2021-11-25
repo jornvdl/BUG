@@ -15,7 +15,8 @@
 
 // Led configuration variables
 #define numLeds       4
-#define flashTime     600
+#define blinkTime     600
+int blinkColour[3]  = {0x0, 0x0, 0xFF};
 
 // Configuration button variables
 #define debounceTime  500   // in millis
