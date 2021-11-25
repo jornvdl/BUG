@@ -2,7 +2,7 @@
 #define _SHUTDOWN_H
 #include "memory.h"
 
-void shutdown(){
+void shutdown() {
   if (debug) Serial.println("Shutting down! Turning LEDs off and writing memory...");
   ledsOff();                  //Turn Leds off
   digitalWrite(rdyPin,LOW);   //Set the readyPin low

@@ -15,7 +15,6 @@ void btnPress() {
   bleKeyboard.press();
   while(digitalRead(btnPin)) {};
   bleKeyboard.releaseAll();
-  // Sleeptimer reset
 
   if (debug) Serial.println("Game button released!");
 }

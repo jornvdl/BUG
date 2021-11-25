@@ -52,6 +52,7 @@ Adafruit_NeoPixel leds(numLeds, ledPin, NEO_GRB + NEO_KHZ800);
 // Mode select
 int confSelect;
 
-
+// Timers
+volatile long sleepTimer;
 
 #endif // _VARIABLES_H

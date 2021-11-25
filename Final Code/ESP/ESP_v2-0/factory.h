@@ -10,6 +10,8 @@ void factory() {
   bleKeyboard.setColour  ( &factColour[0]       );
   bleKeyboard.cirKeys    ( &factMode[0]         );
   bleKeyboard.setLayout  ( &keyLayout[factConf] ); 
+  
+  bleKeyboard.flgRstBUG(false);
 }
 
 

@@ -21,32 +21,66 @@
 // setup() is run once at start up
 void setup() {
   initSystem();
+  sleeptimer = millis();
 }
 
 // loop() is looped after completion of the setup() function.
 //  in this function, the main loop is implemented.
 void loop() {
   if (bleKeyboard.isConnected()) {
-    // do stuff when just connected
-    //  update LED
-    //  reset Timeout timer
+    ledOn();                // Enable LEDs
+    sleepTimer = millis();  // Reset sleeptimer
 
     while(bleKeyboard.isConnected()) {
-      // stay here while connected
-      // check if:
-      //  button pressed                -> btnPress and reset timer
-      //  configuration pressed         -> confPress and reset timer
-      //  BLE Characteristic is changed -> LED update and reset timer
+      // React to a button press
+      if (digitalRead(btnPin)) {
+        sleepTimer = millis();
+        btnPress();
+      } 
+
+      // React to a configuration press
+      if (digitalRead(confPin)) {
+        sleepTimer = millis();
+        confPress();
+      } 
+
+      // Sleeptimer restart requested, so BLE char updated
+      if (*bleKeyboard.flgRstTimer()) {
+        sleepTimer = millis();
+        ledOn();
+        bleKeyboard.flgRstTimer(false);
+      }
+
+      // Factory reset requested over BLE
+      if (*bleKeyboard.flgRstBUG()) {
+        factory();
+      }
+
+      // Shutdown if to long inactivity
+      int timeLived = millis() - sleepTimer;
+      if (timeLived > *bleKeyboard.getTimeout()) {
+        if (debug) Serial.println("Sleeptimer exceeded!")
+        shutdown();
+      }
     }
   } 
 
-  else {
-    // do stuff when just disconnected
-    //  update LED
-    //  reset Timeout timer
+  else { // !bleKeyboard.isConnected()
+    bleDisconnected();
 
     while(!bleKeyboard.isConnected()) {
-      // stay here while disconnected
+      // React to a configuration press
+      if (digitalRead(confPin)) {
+        sleepTimer = millis();
+        confPress();
+      }
+
+      // Shutdown if to long inactivity
+      int timeLived = millis() - sleepTimer;
+      if (timeLived > *bleKeyboard.getTimeout()) {
+        if (debug) Serial.println("Sleeptimer exceeded!")
+        shutdown();
+      }
     }
   }
 }
