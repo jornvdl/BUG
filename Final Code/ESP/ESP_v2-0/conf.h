@@ -8,10 +8,18 @@ void confPress(){
   }
   if(!flgConfRecent){
     confTimer = millis();
-    
+    while((millis() - confTimer) > shutdownTime && (millis() - confTimer) < factoryTime) {
+      ledsOff();
+    }
+    if ((millis() - confTimer) > factoryTime) {
+      ledsBlink();
+    }
   }
 
 }
 
+void confRelease(){
+  
+}
 
 #endif // _CONF_H
