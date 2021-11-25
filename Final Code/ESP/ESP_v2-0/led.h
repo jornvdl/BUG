@@ -66,7 +66,10 @@ void ledsBlink(bool keepColour, bool keepLayout) {
   int ledPeriod = millis() % (blinkTime * 2);
   bool ledEnabled = ledPeriod > blinkTime;
   
-   // Set LEDs
+  bool currentState = leds.getPixelColor > 0;
+  if (debug) Serial.println
+
+  // Set LEDs
   for(int i = 0; i < 4; i++) {
     if( (*(layout_hextobin()+i) || !keepLayout) && ledEnabled) {
       leds.setPixelColor((3-i), ledColour);
