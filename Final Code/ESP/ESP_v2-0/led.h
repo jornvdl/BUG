@@ -70,19 +70,19 @@ void ledsBlink(bool keepColour, bool keepLayout) {
   for (int j = 0; j < 4; j++) {
     currentState = currentState | (leds.getPixelColor(j) > 0 );
   }
-  
-  if (debug) {
-    Serial.print  ("Current state LEDs (blink) = ");
-    Serial.println(currentState);
-  }
 
   // Set LEDs
   for(int i = 0; i < 4; i++) {
-    if( (*(layout_hextobin()+i) || !keepLayout) && ledEnabled) {
-      leds.setPixelColor((3-i), ledColour);
+    if( !currentState && ledEnabled) {              // If currently off, but supposed to be on
+      if (*(layout_hextobin()+1) || !keepLayout ) { // and specific LED should be on
+        leds.setPixelColor((3-i), ledColour);       // set LED colour
+      }
+      else {                                        // otherwise set off (layout specific)
+        leds.setPixelColor((3-i), leds.Color(0,0,0));
+      }
     }
-    else {
-      leds.setPixelColor((3-i), leds.Color(0,0,0));
+    else if ( currentState && !ledEnabled) {        // If currently on, but supposed to be off
+      leds.setPixelColor((3-i), leds.Color(0,0,0)); // Turn off
     }
   }
   leds.show();
