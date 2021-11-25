@@ -9,11 +9,13 @@ int * layout_hextobin(){
   binTemp[1] = (layout_main>>2 &1);
   binTemp[0] = (layout_main>>3 &1);
   return binTemp;
+  
+  if (debug) Serial.println("Layout hextobin");
 
 }
 
 
-void ledShow() {
+void ledOn() {
   //Set neopixles according to ledBin top = ledBin[3], left = ledBin[2], down = ledBin[1], right = ledBin[0]
   //neo pixels: top = 0, left = 1, down = 2, right = 3;
   bool ledBin[4] = {0,0,0,0};
@@ -36,7 +38,7 @@ void ledShow() {
     leds.show();
   }
 
-  if (debug) Serial.println("LEDs updated");
+  if (debug) Serial.println("LEDs On/update");
 
 }
 
@@ -44,6 +46,9 @@ void ledShow() {
 void ledsOff() {
   leds.clear();
   leds.show();
+
+  if (debug) Serial.println("LEDs off");
+
 }
 
 void ledsBlink() {
@@ -55,6 +60,9 @@ void ledsBlink() {
   leds.clear();
   leds.show();
   delay(500);
+
+  if (debug) Serial.println("LEDs blink");
+
 }
 
 void bleDisconnected(){
@@ -82,7 +90,7 @@ void bleDisconnected(){
     LEDsoff();
     blinktimeoff = millis();
   }
-    
+  if (debug) Serial.println("LEDs BLE disconnect");
 }
 
 #endif // _LED_H
