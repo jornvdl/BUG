@@ -16,6 +16,16 @@ void confRelease(int pressTime){
   int releaseTime = millis();
   int durationTime = releaseTime - pressTime;
   bool* ptrMode = bleKeyboard.cirKeys();
+
+  if (debug) {
+    Serial.print("DEBUG: ptrMode: [");
+    for (i=0; i<5; i++) {
+      Serial.print(*(ptrMode+i));
+      Serial.print(",");
+    }
+    Serial.println("]")
+  }
+
   while(millis() - releaseTime < debounceTime) {
     if((durationTime < shutdownTime) && modeSelect()) {
       if (debug) Serial.println("conf:next key");
