@@ -18,7 +18,7 @@ void confRelease(int pressTime) {
   bool* ptrMode = bleKeyboard.cirKeys();
 
   if((durationTime < shutdownTime) && modeSelect()) {
-    if (debug) {Serial.println("conf:next key");
+    if (debug) Serial.println("conf:next key");
     confSelect++;
     if(confSelect > 4) confSelect = 0;
 
