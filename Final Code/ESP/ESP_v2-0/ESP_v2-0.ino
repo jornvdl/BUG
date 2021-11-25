@@ -5,7 +5,7 @@
 #define USE_NIMBLE
 #define debug 1       // Set to 1 to enable serial debug information. Baudrate = 115200
 
-#include <BleKeyboard.h>
+#include <BleKeyboardGATT.h>
 #include <Adafruit_NeoPixel.h>
 
 // Import custom libraries
