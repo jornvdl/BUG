@@ -10,7 +10,7 @@ int* layout_hextobin(){
   binTemp[1] = (layout_main>>2 &1);
   binTemp[0] = (layout_main>>3 &1);
 
-  if (debug) Serial.println("Layout hextobin");
+  //if (debug) Serial.println("Layout hextobin");
 
   return binTemp;
 }
@@ -71,6 +71,14 @@ void ledsBlink(bool keepColour, bool keepLayout) {
     currentState = currentState | (leds.getPixelColor(j) > 0 );
   }
 
+  if (debug && !currentState &&  ledEnabled) {
+    Serial.print("LED Blink: on ");
+    if (keepLayout) Serial.print("[keeplayout]");
+    if (keepColour) Serial.print("[keepcolour]");
+    Serial.print("\n");
+  }
+  if (debug &&  currentState && !ledEnabled) Serial.println("Led Blink: off");
+
   // Set LEDs
   for(int i = 0; i < 4; i++) {
     if( !currentState && ledEnabled) {              // If currently off, but supposed to be on
@@ -83,6 +91,7 @@ void ledsBlink(bool keepColour, bool keepLayout) {
     }
     else if ( currentState && !ledEnabled) {        // If currently on, but supposed to be off
       leds.setPixelColor((3-i), leds.Color(0,0,0)); // Turn off
+      if (debug) Serial.println("LED Blink: off");
     }
   }
   leds.show();
