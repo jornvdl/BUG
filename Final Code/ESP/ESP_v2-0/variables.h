@@ -19,7 +19,7 @@
 int blinkColour[3]  = {0x0, 0x0, 0xFF};
 
 // Configuration button variables
-#define debounceTime  500   // in millis
+#define debounceTime  250   // in millis
 #define shutdownTime  3000  // in millis
 #define factoryTime   7000  // in millis
 
