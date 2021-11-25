@@ -11,8 +11,8 @@
 // Import custom libraries
 #include "variables.h"
 #include "init.h"
-#include "factory.h"
 #include "led.h"
+#include "factory.h"
 #include "battery.h"
 #include "btn.h"
 #include "shutdown.h"
@@ -65,7 +65,7 @@ void loop() {
       }
 
       // Shutdown if to long inactivity
-      int timeLived = millis() - sleepTimer;
+      int timeLived = millis()/1000 - sleepTimer;
       if (timeLived > *bleKeyboard.getTimeout()) {
         if (debug) Serial.println("Sleeptimer exceeded!");
         shutdown();

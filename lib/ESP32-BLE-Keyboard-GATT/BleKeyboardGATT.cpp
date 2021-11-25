@@ -98,7 +98,6 @@ class stateCallbacks: public BLECharacteristicCallbacks {
 
     if ((*data & 0x80) == 0x80) {					// Reset the BUG
     	rstBUG = true;
-    	rstTimer = true;
     }
 
     identify 	= (*data & 0x40) == 0x40;
@@ -108,7 +107,8 @@ class stateCallbacks: public BLECharacteristicCallbacks {
     keys[1]		=	(*data & 0x04) == 0x04;
     keys[2]		=	(*data & 0x02) == 0x02;
     keys[3]		=	(*data & 0x01) == 0x01;
-
+      
+    rstTimer = true;
 
     int written = rstBUG * 128 + identify * 64 + wasd * 32 + keys[4] * 16 + keys[0] * 8 + keys[1] * 4 + keys[2] * 2 + keys[1];
     stateCharacteristic->setValue(written);

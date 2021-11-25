@@ -43,7 +43,7 @@ bool factWASD      = false;
 
 int keyArrows[5]  = {keyUp, keyLeft, keyDown, keyRight, keySpace};
 int keyWASD[5]    = {keyW,  keyA,    keyS,    keyD,     keySpace};
-int keyLayout[5]  = {0x01,  0x02,    0x04,    0x08,     0xE};
+int keyLayout[5]  = {0x01,  0x02,    0x04,    0x08,     0x0E};
 
 // Battery percentage variables equation in battery.h
 float a = 0.00005;

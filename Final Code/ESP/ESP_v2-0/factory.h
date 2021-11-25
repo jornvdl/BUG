@@ -4,18 +4,22 @@ void factory() {
   if (debug) Serial.println("factory: writing factory settings to library");
   if (factWASD) {
     bleKeyboard.setKeybind ( &keyWASD[factConf] );  
+    bleKeyboard.flgWASD(true);
   }
   else {
     bleKeyboard.setKeybind ( &keyArrows[factConf] );  
+    bleKeyboard.flgWASD(false);
   }
-  bleKeyboard.setColour  ( &factColour[0]       );
-  bleKeyboard.cirKeys    ( &factMode[0]         );
-  bleKeyboard.setLayout  ( &keyLayout[factConf] ); 
+  bleKeyboard.setColour  ( &factColour[0] );
+  bleKeyboard.cirKeys    ( &factMode[0]   );
+  bleKeyboard.setLayout  ( &keyLayout[0]  ); 
   
   bleKeyboard.flgRstBUG(false);
   bleKeyboard.flgIdentify(false);
 
   confSelect = factConf;
+
+  ledsOn();
 }
 
 

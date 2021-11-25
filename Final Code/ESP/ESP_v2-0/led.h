@@ -45,10 +45,17 @@ void ledsOn() {
 
 
 void ledsOff() {
-  leds.clear();
-  leds.show();
-  if (debug) Serial.println("LEDs off");
 
+  bool currentState = 0;
+  for (int j = 0; j < 4; j++) {
+    currentState = currentState || (leds.getPixelColor(j) > 0 );
+  }
+
+  if (currentState) {
+    leds.clear();
+    leds.show();
+    if (debug) Serial.println("LEDs off");
+  }
 }
 
 void ledsBlink(bool keepColour, bool keepLayout) {
@@ -68,21 +75,25 @@ void ledsBlink(bool keepColour, bool keepLayout) {
   
   bool currentState = 0;
   for (int j = 0; j < 4; j++) {
-    currentState = currentState | (leds.getPixelColor(j) > 0 );
+    currentState = currentState || (leds.getPixelColor(j) > 0 );
   }
 
   if (debug && !currentState &&  ledEnabled) {
-    Serial.print("LED Blink: on ");
-    if (keepLayout) Serial.print("[keeplayout]");
+    Serial.print("LED Blink: on  ");
     if (keepColour) Serial.print("[keepcolour]");
+    if (keepLayout) {
+      Serial.print("[keeplayout=");
+      Serial.print(*bleKeyboard.getLayout());
+      Serial.print("]");
+    }
     Serial.print("\n");
   }
-  if (debug &&  currentState && !ledEnabled) Serial.println("Led Blink: off");
+  if (debug &&  currentState && !ledEnabled) Serial.println("LED Blink: off");
 
   // Set LEDs
   for(int i = 0; i < 4; i++) {
     if( !currentState && ledEnabled) {              // If currently off, but supposed to be on
-      if (*(layout_hextobin()+1) || !keepLayout ) { // and specific LED should be on
+      if (*(layout_hextobin()+i) || !keepLayout ) { // and specific LED should be on
         leds.setPixelColor((3-i), ledColour);       // set LED colour
       }
       else {                                        // otherwise set off (layout specific)
@@ -91,7 +102,6 @@ void ledsBlink(bool keepColour, bool keepLayout) {
     }
     else if ( currentState && !ledEnabled) {        // If currently on, but supposed to be off
       leds.setPixelColor((3-i), leds.Color(0,0,0)); // Turn off
-      if (debug) Serial.println("LED Blink: off");
     }
   }
   leds.show();

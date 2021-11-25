@@ -4,9 +4,14 @@
 bool modeSelect() {
   bool* ptrMode = bleKeyboard.cirKeys();
   if (*ptrMode || *(ptrMode+1) || *(ptrMode+2) || *(ptrMode+3) || *(ptrMode+4) ) {
+    if (debug) {
+      Serial.print("modeSelect = true, since ");
+      Serial.print(*ptrMode);Serial.print(*(ptrMode+1));Serial.print(*(ptrMode+2));Serial.print(*(ptrMode+3));Serial.println(*(ptrMode+4));
+    }
     return 1;
   }
   else {
+    if (debug) Serial.println("modeSelect = false");
     return 0;
   }
 }
@@ -29,15 +34,16 @@ void confRelease(int pressTime) {
     }
     
     //Write new values to library
-    if (factWASD) {
+    if (*bleKeyboard.flgWASD()) {
       bleKeyboard.setKeybind  ( &keyWASD[confSelect]    );  
     }
     else {
       bleKeyboard.setKeybind  ( &keyArrows[confSelect]  );  
     }
     bleKeyboard.setLayout     ( &keyLayout[confSelect]  );
-    //Update LEDs
-    ledsOn();
+
+    //Update LEDs if BLE connected, otherwise it is handled by ledBlink()
+    if (bleKeyboard.isConnected()) ledsOn();
 
   }
   else if(durationTime > shutdownTime && durationTime < factoryTime) {
@@ -58,9 +64,10 @@ void confPress(){
     if ((millis() - confTimer) > shutdownTime && (millis()- confTimer) < factoryTime) {
       ledsOff();
     }
-    if ((millis() - confTimer) > factoryTime) {
+    else if ((millis() - confTimer) >= factoryTime) {
       ledsBlink(true, false);
     }
+    else if (!bleKeyboard.isConnected()) ledsBlink(false, true);
   }
   confRelease(confTimer);
 }
