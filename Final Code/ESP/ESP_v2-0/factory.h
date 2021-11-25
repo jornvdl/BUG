@@ -14,6 +14,8 @@ void factory() {
   
   bleKeyboard.flgRstBUG(false);
   bleKeyboard.flgIdentify(false);
+
+  confSelect = factConf;
 }
 
 

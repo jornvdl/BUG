@@ -15,23 +15,24 @@ void confRelease(int pressTime){
   if (debug) Serial.println("conf:released");
   int releaseTime = millis();
   int durationTime = releaseTime - pressTime;
+  bool* ptrMode = bleKeyboard.cirKeys();
   while(durationTime < debounceTime) {
     if((durationTime < shutdownTime) && modeSelect()) {
       if (debug) Serial.println("conf:next key");
-      factConf++;
-      if(factConf > 4) factConf = 0;
-      while (!factMode[factConf]) {
-        factConf++;
-        if(factConf > 4) factConf = 0;  
+      confSelect++;
+      if(confSelect > 4) confSelect = 0;
+      while (!*(ptrMode + confSelect)) {
+        confSelect++;
+        if(confSelect > 4) confSelect = 0;  
       }
       //Write new values to library
       if (factWASD) {
-        bleKeyboard.setKeybind  ( &keyWASD[factConf]    );  
+        bleKeyboard.setKeybind  ( &keyWASD[confSelect]    );  
       }
       else {
-        bleKeyboard.setKeybind  ( &keyArrows[factConf]  );  
+        bleKeyboard.setKeybind  ( &keyArrows[confSelect]  );  
       }
-      bleKeyboard.setLayout     ( &keyLayout[factConf]  );
+      bleKeyboard.setLayout     ( &keyLayout[confSelect]  );
       //Update LEDs
       ledsOn();
 
@@ -50,7 +51,7 @@ void confRelease(int pressTime){
 void confPress(){
   if (debug) Serial.println("conf:pressed");
   int confTimer = millis();
-  while(digitalRead(btnPin)) {
+  while(digitalRead(confPin)) {
     while((millis() - confTimer) > shutdownTime && (millis()- confTimer) < factoryTime) {
       ledsOff();
     }
