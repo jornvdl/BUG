@@ -46,6 +46,7 @@ void loop() {
 
       // Sleeptimer restart requested, so BLE char updated
       if (*bleKeyboard.flgRstTimer()) {
+        if (debug) Serial.println("Sleeptimer reset requested from library");
         sleepTimer = millis();
         ledOn();
         bleKeyboard.flgRstTimer(false);
@@ -53,13 +54,14 @@ void loop() {
 
       // Factory reset requested over BLE
       if (*bleKeyboard.flgRstBUG()) {
+        if (debug) Serial.println("Reset BUG from BLE flag.");
         factory();
       }
 
       // Shutdown if to long inactivity
       int timeLived = millis() - sleepTimer;
       if (timeLived > *bleKeyboard.getTimeout()) {
-        if (debug) Serial.println("Sleeptimer exceeded!")
+        if (debug) Serial.println("Sleeptimer exceeded!");
         shutdown();
       }
     }
@@ -78,7 +80,7 @@ void loop() {
       // Shutdown if to long inactivity
       int timeLived = millis() - sleepTimer;
       if (timeLived > *bleKeyboard.getTimeout()) {
-        if (debug) Serial.println("Sleeptimer exceeded!")
+        if (debug) Serial.println("Sleeptimer exceeded!");
         shutdown();
       }
     }
