@@ -52,8 +52,8 @@ void memory2lib() {
 }
 
 void lib2memory() {
-  int* memColour = bleKeyboard.getColour();
-  int* memMode   = bleKeyboard.cirKeys();
+  int*  memColour = bleKeyboard.getColour();
+  bool* memMode   = bleKeyboard.cirKeys();
   
   memory.begin("bug_data", false);
   memory.putInt("key",    *bleKeyboard.getKeybind() );

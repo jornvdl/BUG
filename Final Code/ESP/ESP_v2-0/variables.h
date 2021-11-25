@@ -23,11 +23,11 @@
 #define factoryTime   7000  // in millis
 
 // Factory settings variables
-const int  factSleep     = 300;                  // in seconds
-const int  factColour[3] = {0x22, 0xA0, 0xFF};   // R,G,B values
-const bool factMode[5]   = {1,1,1,1,0};          // 0 disabled, 1: ↑←↓→␣, 2: WASD␣
-const int  factConf      = 0;                    // Start value of confSelect. Range [0,4]
-const bool factWASD      = false;
+int  factSleep     = 300;                  // in seconds
+int  factColour[3] = {0x22, 0xA0, 0xFF};   // R,G,B values
+bool factMode[5]   = {1,1,1,1,0};          // 0 disabled, 1: ↑←↓→␣, 2: WASD␣
+int  factConf      = 0;                    // Start value of confSelect. Range [0,4]
+bool factWASD      = false;
 
 // Keybind arrays and corresponding layout
 #define keyRight      215
@@ -40,9 +40,9 @@ const bool factWASD      = false;
 #define keyD          100
 #define keySpace      32
 
-const int keyArrows[5]  = {keyUp, keyLeft, keyDown, keyRight, keySpace};
-const int keyWASD[5]    = {keyW,  keyA,    keyS,    keyD,     keySpace};
-const int keyLayout[5]  = {0x01,  0x02,    0x04,    0x08,     0xE};
+int keyArrows[5]  = {keyUp, keyLeft, keyDown, keyRight, keySpace};
+int keyWASD[5]    = {keyW,  keyA,    keyS,    keyD,     keySpace};
+int keyLayout[5]  = {0x01,  0x02,    0x04,    0x08,     0xE};
 
 ////////////////////////////// Global variables //////////////////////////////
 // Classes from libraries

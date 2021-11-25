@@ -2,12 +2,14 @@
 #define _LED_H
 
 int * layout_hextobin(){
-  static int binTemp[] = {0,0,0,0};
-  layout_main = *bleKeyboard.getLayout();
+  static int binTemp[]   = {0,0,0,0};
+         int layout_main = *bleKeyboard.getLayout();
+
   binTemp[3] = (layout_main &1);
   binTemp[2] = (layout_main>>1 &1);
   binTemp[1] = (layout_main>>2 &1);
   binTemp[0] = (layout_main>>3 &1);
+
   return binTemp;
   
   if (debug) Serial.println("Layout hextobin");
@@ -26,14 +28,14 @@ void ledOn() {
   ledBin[3] = *(layout_hextobin()+3);     
   
   int* ptrColour = bleKeyboard.getColour(); 
-  long ledColour = leds.Color(*ptrColour,*(ptrColour+1),*(ptrColour+2));
+  long ledColour = leds.Color(*ptrColour, *(ptrColour+1), *(ptrColour+2));
   
-  for(int i = 0, i < 4, i++){
+  for(int i = 0; i < 4; i++) {
     if (ledBin[i]) {
-      leds.setpixelColor((3-i), ledColour);
+      leds.setPixelColor((3-i), ledColour);
     }
     else {
-      leds.setpixelColor((3-i), leds.Color(0,0,0));
+      leds.setPixelColor((3-i), leds.Color(0,0,0));
     }
     leds.show();
   }
@@ -74,12 +76,12 @@ void bleDisconnected(){
   long off  = leds.Color(0,0,0);
   if (millis() - blinktimeoff > 300 && millis() - blinktimeon > 600) {
     
-    for(int i = 0, i < 4, i++){
+    for(int i = 0; i < 4; i++){
       if (*(layout_hextobin()+i)) {
-        leds.setpixelColor((3-i), ledColour);
+        leds.setPixelColor((3-i), blue);
       }
       else {
-      leds.setpixelColor((3-i), leds.Color(0,0,0));
+      leds.setPixelColor((3-i), leds.Color(0,0,0));
       }
     leds.show();
     }
