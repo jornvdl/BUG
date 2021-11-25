@@ -66,7 +66,7 @@ void ledsBlink(bool keepColour, bool keepLayout) {
   int ledPeriod = millis() % (blinkTime * 2);
   bool ledEnabled = ledPeriod > blinkTime;
   
-  bool currentState = leds.getPixelColor > 0;
+  bool currentState = leds.getPixelColor() > 0;
   if (debug) {
     Serial.print  ("Current state LEDs (blink) = ");
     Serial.println(currentState);
