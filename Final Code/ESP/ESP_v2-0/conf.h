@@ -1,19 +1,14 @@
 #ifndef _CONF_H
 #define _CONF_H
 
-
-void confPress(){
-  if (debug) Serial.println("conf:pressed");
-  int confTimer = millis();
-  while(digitalRead(btnPin)) {
-    while((millis() - confTimer) > shutdownTime && (millis()- confTimer) < factoryTime) {
-      ledsOff();
-    }
-    if ((millis() - confTimer) > factoryTime) {
-      ledsBlink(true, false);
-    }
+bool modeSelect() {
+  bool* ptrMode = bleKeyboard.cirKeys();
+  if (*ptrMode || *(ptrMode+1) || *(ptrMode+2) || *(ptrMode+3) || *(ptrMode+4) ) {
+    return 1;
   }
-  confRelease(confTimer);
+  else {
+    return 0;
+  }
 }
 
 void confRelease(int pressTime){
@@ -52,13 +47,18 @@ void confRelease(int pressTime){
   }
 }
 
-bool modeSelect() {
-  int* ptrMode = factMode[0];
-  if (*ptrMode || *(ptrMode+1) || *(ptrMode+2) || *(ptrMode+3) || *(ptrMode+4) {
-    return 1;
+void confPress(){
+  if (debug) Serial.println("conf:pressed");
+  int confTimer = millis();
+  while(digitalRead(btnPin)) {
+    while((millis() - confTimer) > shutdownTime && (millis()- confTimer) < factoryTime) {
+      ledsOff();
+    }
+    if ((millis() - confTimer) > factoryTime) {
+      ledsBlink(true, false);
+    }
   }
-  else {
-    return 0;
-  }
+  confRelease(confTimer);
 }
+
 #endif // _CONF_H

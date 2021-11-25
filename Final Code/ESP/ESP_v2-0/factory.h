@@ -1,7 +1,7 @@
 #ifndef _FACTORY_H
 #define _FACTORY_H
 void factory() {
-  if (debug) Serial.println("factory: writing factory settings to library")
+  if (debug) Serial.println("factory: writing factory settings to library");
   if (factWASD) {
     bleKeyboard.setKeybind ( &keyWASD[factConf] );  
   }

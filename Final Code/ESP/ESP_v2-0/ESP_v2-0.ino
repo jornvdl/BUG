@@ -10,7 +10,6 @@
 
 // Import custom libraries
 #include "variables.h"
-#include "flags.h"
 #include "init.h"
 #include "factory.h"
 #include "led.h"
@@ -21,7 +20,7 @@
 // setup() is run once at start up
 void setup() {
   initSystem();
-  sleeptimer = millis();
+  sleepTimer = millis();
 }
 
 // loop() is looped after completion of the setup() function.

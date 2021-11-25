@@ -52,12 +52,14 @@ void ledsOff() {
 }
 
 void ledsBlink(bool keepColour, bool keepLayout) {
+  long ledColour;
+
   if (keepColour) {
     int* ptrColour = bleKeyboard.getColour();
-    long ledColour = leds.Color(*ptrColour, *(ptrColour+1), +(ptrColour+2));
+    ledColour = leds.Color(*ptrColour, *(ptrColour+1), *(ptrColour+2));
   } 
   else { // If not using current colour, then select blinkColour set in variables.
-    long ledColour = leds.Color(blinkColour[0], blinkColour[1], blinkColour[2]);
+    ledColour = leds.Color(blinkColour[0], blinkColour[1], blinkColour[2]);
   }
 
   // Determine if LEDs should be on or off
