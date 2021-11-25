@@ -13,6 +13,7 @@
 #include "init.h"
 #include "factory.h"
 #include "led.h"
+#include "battery.h"
 #include "btn.h"
 #include "shutdown.h"
 #include "conf.h"
