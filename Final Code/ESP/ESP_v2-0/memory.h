@@ -12,11 +12,11 @@
 Preferences memory;
 
 void memory2lib() {
-  int memKey;
-  int memColour[3];
-  int memMode[5];
-  int memLayout;
-  int memSleep;
+  int  memKey;
+  int  memColour[3];
+  bool memMode[5];
+  int  memLayout;
+  int  memSleep;
     
   memory.begin("bug_data",true);
 
@@ -38,7 +38,7 @@ void memory2lib() {
   memLayout     = memory.getInt("layout", keyLayout[factConf] );
   memSleep      = memory.getInt("timeout",factSleep           );
   confSelect    = memory.getInt("conf",   factConf            );
-  memory.end()
+  memory.end();
 
   bleKeyboard.setKeybind ( &memKey       );
   bleKeyboard.setColour  ( &memColour[0] );
@@ -70,4 +70,4 @@ void lib2memory() {
   memory.putInt("conf",    confSelect               );
 }
 
-#endif _MEMORY_H
+#endif // _MEMORY_H

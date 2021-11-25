@@ -25,7 +25,7 @@
 // Factory settings variables
 const int  factSleep     = 300;                  // in seconds
 const int  factColour[3] = {0x22, 0xA0, 0xFF};   // R,G,B values
-const int  factMode[5]   = {1,1,1,1,0};          // 0 disabled, 1: ↑←↓→␣, 2: WASD␣
+const bool factMode[5]   = {1,1,1,1,0};          // 0 disabled, 1: ↑←↓→␣, 2: WASD␣
 const int  factConf      = 0;                    // Start value of confSelect. Range [0,4]
 const bool factWASD      = false;
 

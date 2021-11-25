@@ -18,12 +18,13 @@
 #include "shutdown.h"
 #include "conf.h"
 
-
-
+// setup() is run once at start up
 void setup() {
-  
+  initSystem();
 }
 
+// loop() is looped after completion of the setup() function.
+//  in this function, the main loop is implemented.
 void loop() {
   
 }
