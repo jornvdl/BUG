@@ -89,7 +89,7 @@ void bleDisconnected(){
    
   }
   else if (millis() - blinktimeon > 300 && millis() - blinktimeoff > 600) {
-    LEDsoff();
+    ledsOff();
     blinktimeoff = millis();
   }
   if (debug) Serial.println("LEDs BLE disconnect");

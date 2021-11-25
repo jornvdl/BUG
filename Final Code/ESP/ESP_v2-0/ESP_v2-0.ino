@@ -26,5 +26,27 @@ void setup() {
 // loop() is looped after completion of the setup() function.
 //  in this function, the main loop is implemented.
 void loop() {
-  
+  if (bleKeyboard.isConnected()) {
+    // do stuff when just connected
+    //  update LED
+    //  reset Timeout timer
+
+    while(bleKeyboard.isConnected()) {
+      // stay here while connected
+      // check if:
+      //  button pressed                -> btnPress and reset timer
+      //  configuration pressed         -> confPress and reset timer
+      //  BLE Characteristic is changed -> LED update and reset timer
+    }
+  } 
+
+  else {
+    // do stuff when just disconnected
+    //  update LED
+    //  reset Timeout timer
+
+    while(!bleKeyboard.isConnected()) {
+      // stay here while disconnected
+    }
+  }
 }
