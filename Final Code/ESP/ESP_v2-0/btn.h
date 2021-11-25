@@ -16,6 +16,8 @@ void btnPress() {
   while(digitalRead(btnPin)) {};
   bleKeyboard.releaseAll();
 
+  batterySend();
+  
   if (debug) Serial.println("Game button released!");
 }
 

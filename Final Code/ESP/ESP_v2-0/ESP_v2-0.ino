@@ -48,6 +48,7 @@ void loop() {
         if (debug) Serial.println("Sleeptimer reset requested from library");
         sleepTimer = millis();
         ledsOn();
+        batterySend();
         bleKeyboard.flgRstTimer(false);
       }
 
