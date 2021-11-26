@@ -1,7 +1,3 @@
-# HeartRateGame #
+# PC Configurator #
 
-Demonstrates how to check a Bluetooth-connection, discover LE-devices, connect
-to devices, discover services and finally connect to a heartrate-service.
-The purpose of the game is increase the heartrate so much as possible in 60s.
-Relax before starting the game. Don't be too nervous, it increases the heartrate!
-
+Provides a simple GUI for configuring the BUG, version Leopard Moth. It is a detailed proof of concept and still contains several bugs (such as reselecting a BUG from the main screen and then reconfiguring it does not work), but the concept itself works.
