@@ -1,0 +1,13 @@
+debug/main.o
+debug/connectionhandler.o
+debug/deviceinfo.o
+debug/devicefinder.o
+debug/devicehandler.o
+debug/bluetoothbaseclass.o
+debug/qrc_qml.o
+debug/qrc_images.o
+debug/moc_connectionhandler.o
+debug/moc_deviceinfo.o
+debug/moc_devicefinder.o
+debug/moc_devicehandler.o
+debug/moc_bluetoothbaseclass.o

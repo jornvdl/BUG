@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/images/logo.png</file>
+        <file>qml/images/bt_off_to_on.png</file>
+        <file>qml/images/heart.png</file>
+        <file>qml/images/frontview.png</file>
+        <file>qml/images/upload.png</file>
+    </qresource>
+</RCC>
