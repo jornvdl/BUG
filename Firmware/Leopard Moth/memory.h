@@ -1,4 +1,4 @@
-/* Memory header
+/* 
  *  In this file, saving and retrieving data to the internal EEPROM 
  *  memory will be handled. Except for the (global) confSelect, this
  *  is stored/saved to the BleKeyboard lib, handling a lot of the data.

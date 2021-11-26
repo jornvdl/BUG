@@ -1,3 +1,12 @@
+/*
+ *  This function will handle the configuration button behaviour. It is send here when pressed,
+ *  and acts according to the timing values and release of the button. It has a very simple debounce and 3 functions:
+ *  - next key, a short press
+ *  - shutdown, a middle press
+ *  - revert to factory settings, a long press.
+ *  Timings of the press durations are set in variables.h
+ */
+
 #ifndef _CONF_H
 #define _CONF_H
 

@@ -1,3 +1,7 @@
+/*
+ *  Function to reset BUG to the factory settings
+ */
+
 #ifndef _FACTORY_H
 #define _FACTORY_H
 void factory() {

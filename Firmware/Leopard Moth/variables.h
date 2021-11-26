@@ -1,10 +1,15 @@
+/*
+ *   Overview of all definitions, global variables. Small configurations can be set here, such
+ *   as default factory settings, pin declarations and timing values
+ */
+
 #ifndef _VARIABLES_H
 #define _VARIABLES_H
 
 /////////////////////////// Definitions and values ///////////////////////////
 // Device Info
-#define deviceName    "BUGsy"
-#define manufacturer  "Espressif"
+#define deviceName    "Leopard Moth"
+#define manufacturer  "Bluetooth Ultrasimple Gamepad"
 
 // Pin declarations
 #define btnPin        19
@@ -24,11 +29,11 @@ int blinkColour[3]  = {0x0, 0x0, 0xFF};
 #define factoryTime   7000  // in millis
 
 // Factory settings variables
-int  factSleep     = 300;                  // in seconds
+int  factSleep     = 360;                  // in seconds
 int  factColour[3] = {0x22, 0xA0, 0xFF};   // R,G,B values
-bool factMode[5]   = {1,1,1,1,0};          // 0 disabled, 1: ↑←↓→␣, 2: WASD␣
+bool factMode[5]   = {1,1,1,1,0};          // 0 disabled, 1 enabled (order: ↑←↓→␣)
 int  factConf      = 0;                    // Start value of confSelect. Range [0,4]
-bool factWASD      = false;
+bool factWASD      = false; 	             // Use WASD instead of arrows
 
 // Keybind arrays and corresponding layout
 #define keyRight      215

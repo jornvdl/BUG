@@ -1,5 +1,13 @@
 /*
- * 
+ *  Mainframe firmware for BUG - Bluetooth Ultrasimple Gamepad
+ *  Written by Floris van der Heijde, Jorn van der Linden
+ *  
+ *  The BUG is an ultrasimple gamepad communication over BLE
+ *  while also configurable over BLE. This is a project for 
+ *  the EE Bachelor Graduation Project of TU Delft.
+ *
+ *  Date: 2021-11-26
+ *  Version: 1.0
  */
 
 #define USE_NIMBLE

@@ -1,3 +1,7 @@
+/*
+ *  Function to extract battery percentage out of the ADC pin.
+ */
+
 #ifndef _BATTERY_H
 #define _BATTERY_H
 
@@ -11,10 +15,12 @@ void batterySend() {
   float avg         = total/20;
   float bV          = 0.0021*avg - 0.4452;
   float battPercent = sqrt((bV/a) + (sq(b)/2*a) - (c/a)) - b/(2*a);
-  if (battPercent > 100) battPercent = 100;
-  int battRound     = round(battPercent);
-  int batt5         = battRound/5;
+
+  // Round to integer (rounded down to 5%)
+  int batt5         = battPercent/5;
   int battFin       = batt5*5;
+
+  battFin = min( 100, max( 0, battFin));
 
   bleKeyboard.setBatteryLevel(battFin);
 

@@ -1,3 +1,10 @@
+/*
+ *  Here, the indicator LED behaviour is managed. Three options are available: 
+ *  All leds off, a selection (according to a given layout) on or blinking.
+ *  All three options have a seperate function and are accompanied by a function
+ *  to convert the layout to a more useable format.
+ */
+
 #ifndef _LED_H
 #define _LED_H
 
@@ -45,7 +52,8 @@ void ledsOn() {
 
 
 void ledsOff() {
-
+  // Turn off all Neopixels, but only if they are currently on to prevent 
+  // unneccesary communications
   bool currentState = 0;
   for (int j = 0; j < 4; j++) {
     currentState = currentState || (leds.getPixelColor(j) > 0 );
@@ -59,8 +67,12 @@ void ledsOff() {
 }
 
 void ledsBlink(bool keepColour, bool keepLayout) {
+// Function to let the leds blink. The function must be called in a loop, since it only updates is state,
+// is does not handle the blinking it self.
+
   long ledColour;
 
+  // Determining the color to show during blinking
   if (keepColour) {
     int* ptrColour = bleKeyboard.getColour();
     ledColour = leds.Color(*ptrColour, *(ptrColour+1), *(ptrColour+2));
@@ -69,15 +81,18 @@ void ledsBlink(bool keepColour, bool keepLayout) {
     ledColour = leds.Color(blinkColour[0], blinkColour[1], blinkColour[2]);
   }
 
-  // Determine if LEDs should be on or off
+  // Determine if LEDs should be on or off. This is done using the system time
+  //  by using the modulo and the millis().
   int ledPeriod = millis() % (blinkTime * 2);
   bool ledEnabled = ledPeriod > blinkTime;
   
+  // Getting current state, to prevent unnecessary updates to the leds
   bool currentState = 0;
   for (int j = 0; j < 4; j++) {
     currentState = currentState || (leds.getPixelColor(j) > 0 );
   }
 
+  // Debug output
   if (debug && !currentState &&  ledEnabled) {
     Serial.print("LED Blink: on  ");
     if (keepColour) Serial.print("[keepcolour]");
@@ -90,7 +105,7 @@ void ledsBlink(bool keepColour, bool keepLayout) {
   }
   if (debug &&  currentState && !ledEnabled) Serial.println("LED Blink: off");
 
-  // Set LEDs
+  // Set LEDs to corrent state and update
   for(int i = 0; i < 4; i++) {
     if( !currentState && ledEnabled) {              // If currently off, but supposed to be on
       if (*(layout_hextobin()+i) || !keepLayout ) { // and specific LED should be on

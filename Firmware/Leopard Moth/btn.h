@@ -1,4 +1,5 @@
-/* Button header
+/* 
+ *  Button header
  *  btnPress() is called when main detects a button press. It sends the event
  *  to the library and waits until the button is released. It then sends that
  *  event to the library and ends the function, returning to the main scope.
