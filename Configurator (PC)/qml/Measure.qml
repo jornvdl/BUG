@@ -66,21 +66,14 @@ GamePage {
     property string __sleeptimer: qsTr("%1s").arg(__rawtimer)
     property real minHR: 0
     property string __modeview: qsTr("↑←↓→␣")
-    property string __batteryperc: qsTr("%1%").arg(__rawbatt)
+    property string __batteryperc: qsTr("N/A")
 
     function close() {
-        deviceHandler.stopMeasurement();
+        //deviceHandler.stopMeasurement();
         deviceHandler.disconnectService();
         app.prevPage();
     }
 
-    function start() {
-        deviceHandler.startMeasurement()
-    }
-
-    function stop() {
-        deviceHandler.stopMeasurement();
-    }
 
     function updateLayout() {
         deviceHandler.sendLayout();
@@ -117,23 +110,6 @@ GamePage {
             radius: width*0.05
             color: GameSettings.viewColor
 
-//            Text {
-//                id: hintText
-//                anchors.centerIn: parent
-//                anchors.verticalCenterOffset: -parent.height*0.1
-//                horizontalAlignment: Text.AlignHCenter
-//                verticalAlignment: Text.AlignVCenter
-//                width: parent.width * 0.8
-//                height: parent.height * 0.6
-//                wrapMode: Text.WordWrap
-//                text: measurePage.relaxText
-//                visible: !deviceHandler.measuring
-//                color: GameSettings.textColor
-//                fontSizeMode: Text.Fit
-//                minimumPixelSize: 10
-//                font.pixelSize: GameSettings.mediumFontSize
-//            }
-
             Text {
                 id: conftext
                 anchors.centerIn: parent
@@ -141,7 +117,7 @@ GamePage {
                 horizontalAlignment: Text.AlignHLeft
                 verticalAlignment: Text.AlignTop
                 width: parent.width * 0.55
-                text: "\nCurrent BUG configuration\n Key bind:   \t"+deviceHandler.keybind.toUpperCase()+"\n Sleeptimer:\t"+deviceHandler.timeout+"s\n Mode:         \t"+__modeview+"\n Battery:     \t"+__batteryperc
+                text: "\nCurrent BUG configuration\n Key bind:   \t"+deviceHandler.keybind.toUpperCase()+"\n Sleeptimer:\t"+deviceHandler.timeout+"s\n Mode:         \t"+deviceHandler.mode+"\n Battery:     \t"+__batteryperc
                 color: GameSettings.textColor
                 fontSizeMode: Text.Fit
                 minimumPixelSize: 10
@@ -514,24 +490,23 @@ GamePage {
     }
 
     GameButton {
-        id: backButton
+        id: idButton
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: GameSettings.fieldMargin
         width: parent.width*0.5 - 1.5 * GameSettings.fieldMargin
         anchors.horizontalCenterOffset: 0.5*GameSettings.fieldMargin + 0.5*width
         height: GameSettings.fieldHeight
-        enabled: false
         radius: GameSettings.buttonRadius
 
-        //onClicked: start()
+        onClicked: deviceHandler.updateMode(7);
 
         Text {
             anchors.centerIn: parent
             font.pixelSize: GameSettings.tinyFontSize
-            text: qsTr("Back")
+            text: qsTr("Identify")
             wrapMode: Text.WordWrap
-            color: backButton.enabled ? GameSettings.textColor : GameSettings.disabledTextColor
+            color: deviceHandler.getIDflg ? GameSettings.buttonPressedColor : GameSettings.textColor
         }
 
 

@@ -126,6 +126,20 @@ void DeviceHandler::fetchBLEData() const
 
     out << " timeout: " << __timeout << Qt::endl;
 
+    // Add mode read-out
+    a.clear();
+    a += infoChar.value();
+    if (a.isEmpty()) {
+        out << "None" << Qt::endl;
+        __mode = 0 ;
+    }
+
+    tempresult.clear();
+    tempresult += a.toHex();
+    tempresult = tempresult.left(2);
+    out << "Tempresult mode: " << tempresult << Qt::endl;
+    __mode = tempresult.toInt(&valid,16);
+
 }
 
 QString DeviceHandler::getKeybind() const
@@ -306,6 +320,45 @@ int DeviceHandler::getMode() const
     return __mode;
 }
 
+QString DeviceHandler::getTextMode() const
+{
+    if (BLEUpdated) {
+        fetchBLEData();
+        BLEUpdated=false;
+    }
+
+    QString output;
+
+    switch (__mode) {
+    case 0:
+        output = "↑←↓→";
+        break;
+    case 1:
+        output = "↑←↓→␣";
+        break;
+    case 2:
+        output = "WASD";
+        break;
+    case 3:
+        output = "WASD␣";
+        break;
+    case 4:
+        output = "Presenter";
+        break;
+    case 5:
+        output = "Custom key";
+        break;
+    case 6:
+        output = "Identify";
+        break;
+    default:
+        output = "other";
+        break;
+    }
+
+    return output;
+}
+
 bool DeviceHandler::getIDflg() const
 {
     return flgID;
@@ -333,70 +386,61 @@ void DeviceHandler::updateColour(QString from_gui)
 
 void DeviceHandler::updateMode(int k)
 {
-    char mout[4];
+    char mout[1];
 
     if (k < 6) __mode= k;
 
 
     switch (__mode) {
     case 0: // Arrows
-       mout[1] = 0x00;
-       mout[2] = 0x11;
-       mout[3] = 0x11;
+       out << "mode: arrows" << Qt::endl;
+       mout[0] = 0x0F;
         break;
     case 1: // Arrows with space
-       mout[1] = 0x01;
-       mout[2] = 0x11;
-       mout[3] = 0x11;
+        out << "mode: arrows w/ space" << Qt::endl;
+       mout[0] = 0x1F;
         break;
     case 2: // WASD
-       mout[1] = 0x10;
-       mout[2] = 0x11;
-       mout[3] = 0x11;
+        out << "mode: WASD" << Qt::endl;
+       mout[0] = 0x2F;
         break;
     case 3: // WASD with space
-       mout[1] = 0x11;
-       mout[2] = 0x11;
-       mout[3] = 0x11;
+        out << "mode: WASD w/ space" << Qt::endl;
+       mout[0] = 0x3F;
         break;
     case 4: // Arrow left and right (presenter)
-       mout[1] = 0x00;
-       mout[2] = 0x01;
-       mout[3] = 0x01;
+        out << "mode: presenter" << Qt::endl;
+       mout[0] = 0x05;
+        break;
+    case 7: // Indicate, use current settings
+        // stuff
+        mout[0] = __mode;
         break;
     default: // All other options (eg custom key): no flags
-        mout[1] = 0x00;
-        mout[2] = 0x00;
-        mout[3] = 0x00;
+        out << "mode: custom" << Qt::endl;
+        mout[0] = 0x00;
     }
 
-    if (k == 5) { // If indicate, flip flag and update value
+    if (k == 7) { // If indicate, flip flag and update value
+        out << "mode: identify" << Qt::endl;
         flgID = !flgID;
-        mout[0] = flgID * 0x01;
+        mout[0] =+ flgID * 0x40;
         out << "Identify BUG! ID=" << flgID << Qt::endl;
     }
     else if (k == 6) {
-        mout[0] = 0x10;
+        mout[0] = 0x80;
         out << "Reset BUG! to factory settings" << Qt::endl;
     }
-    else
-        mout[0] = 0x00;
 
 
-    QByteArray output = QByteArray::fromRawData(mout,4);
+
+    QByteArray output = QByteArray::fromRawData(mout,1);
     m_service->writeCharacteristic(infoChar, output, QLowEnergyService::WriteWithResponse);
 
     setInfo("Use mode updated.");
     emit dataChanged();
 
 }
-
-// Check if it is possible to fix lighter colours having black text on colour selection
-// Add Indicate button
-
-// EXTRA
-// Add rotating BUG on splash
-// Maybe: explode modes and be able to select specifc keys instead of presets
 
 
 DeviceHandler::DeviceHandler(QObject *parent) :

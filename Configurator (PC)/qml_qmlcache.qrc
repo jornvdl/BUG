@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<RCC>
+    <qresource prefix="/">
+        <file alias="qml/BluetoothAlarmDialog.qml">qml/BluetoothAlarmDialog.qml</file>
+        <file alias="qml/main.qml">qml/main.qml</file>
+        <file alias="qml/SplashScreen.qml">qml/SplashScreen.qml</file>
+        <file alias="qml/GameSettings.qml">qml/GameSettings.qml</file>
+        <file alias="qml/App.qml">qml/App.qml</file>
+        <file alias="qml/TitleBar.qml">qml/TitleBar.qml</file>
+        <file alias="qml/Connect.qml">qml/Connect.qml</file>
+        <file alias="qml/Measure.qml">qml/Measure.qml</file>
+        <file alias="qml/GameButton.qml">qml/GameButton.qml</file>
+        <file alias="qml/GamePage.qml">qml/GamePage.qml</file>
+        <file alias="qml/BottomLine.qml">qml/BottomLine.qml</file>
+        <file alias="qml/qmldir">qml/qmldir</file>
+        <file alias="qml/Layout0Button.qml">qml/Layout0Button.qml</file>
+        <file alias="qml/Layout1Button.qml">qml/Layout1Button.qml</file>
+        <file alias="qml/Layout2Button.qml">qml/Layout2Button.qml</file>
+        <file alias="qml/Layout3Button.qml">qml/Layout3Button.qml</file>
+        <file alias="qml/IDButton.qml">qml/IDButton.qml</file>
+    </qresource>
+</RCC>

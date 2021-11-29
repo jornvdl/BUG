@@ -76,7 +76,7 @@ class DeviceHandler : public BluetoothBaseClass
     Q_PROPERTY(int layout2 READ getLayout2 NOTIFY dataChanged)
     Q_PROPERTY(int layout3 READ getLayout3 NOTIFY dataChanged)
     Q_PROPERTY(int timeout READ getTimeout NOTIFY dataChanged)
-    Q_PROPERTY(int mode READ getMode NOTIFY dataChanged)
+    Q_PROPERTY(QString mode READ getTextMode NOTIFY dataChanged)
 
     Q_PROPERTY(AddressType addressType READ addressType WRITE setAddressType)
 
@@ -104,6 +104,7 @@ public:
     bool getLayout2() const;
     bool getLayout3() const;
     int getMode() const;
+    QString getTextMode() const;
     int getTimeout() const;
     bool getIDflg() const;
 

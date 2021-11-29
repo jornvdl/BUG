@@ -127,7 +127,7 @@ static const uint qt_meta_data_DeviceHandler[] = {
       22, QMetaType::Int, 0x00495001,
       23, QMetaType::Int, 0x00495001,
       24, QMetaType::Int, 0x00495001,
-      25, QMetaType::Int, 0x00495001,
+      25, QMetaType::QString, 0x00495001,
       26, 0x80000000 | 27, 0x0009510b,
 
  // properties: notify_signal_id
@@ -209,7 +209,7 @@ void DeviceHandler::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         case 5: *reinterpret_cast< int*>(_v) = _t->getLayout2(); break;
         case 6: *reinterpret_cast< int*>(_v) = _t->getLayout3(); break;
         case 7: *reinterpret_cast< int*>(_v) = _t->getTimeout(); break;
-        case 8: *reinterpret_cast< int*>(_v) = _t->getMode(); break;
+        case 8: *reinterpret_cast< QString*>(_v) = _t->getTextMode(); break;
         case 9: *reinterpret_cast< AddressType*>(_v) = _t->addressType(); break;
         default: break;
         }

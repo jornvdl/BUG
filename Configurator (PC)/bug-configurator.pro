@@ -2,7 +2,7 @@ TEMPLATE = app
 TARGET = bug-configurator
 
 QT += qml quick bluetooth widgets
-CONFIG += c++11 config qml_debug
+CONFIG += c++11 config qml_debug static
 
 HEADERS += \
     connectionhandler.h \
